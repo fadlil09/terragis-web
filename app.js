@@ -405,6 +405,20 @@
   const confirmPrintBtn = document.getElementById('confirmPrintBtn');
   const backToFormBtn = document.getElementById('backToFormBtn');
   const closeBillingModalBtn = document.getElementById('closeBillingModalBtn');
+  const confirmPaymentSuccessBtn = document.getElementById('confirmPaymentSuccessBtn');
+  const paidSuccessBanner = document.getElementById('paidSuccessBanner');
+  const balanceTitle = document.getElementById('balanceTitle');
+  const bStatusBadge = document.getElementById('bStatusBadge');
+  const tabReceiptBtn = document.getElementById('tabReceiptBtn');
+  const rKuitansiNo = document.getElementById('rKuitansiNo');
+  const rStampDate = document.getElementById('rStampDate');
+  const rPayerName = document.getElementById('rPayerName');
+  const rPayerOrg = document.getElementById('rPayerOrg');
+  const rPayerEmail = document.getElementById('rPayerEmail');
+  const rPaidMethod = document.getElementById('rPaidMethod');
+  const rPaidTimestamp = document.getElementById('rPaidTimestamp');
+  const rTotalIdr = document.getElementById('rTotalIdr');
+  const rLicenseKey = document.getElementById('rLicenseKey');
   const billingTabs = document.querySelectorAll('.b-tab');
 
   function renderPaymentInstructions(method, idrFormatted, accountId) {
@@ -618,9 +632,59 @@
       billingTabs[0].click();
     }
 
+    // Reset paid state on new submission
+    if (paidSuccessBanner) paidSuccessBanner.classList.add('hidden');
+    if (bStatusBadge) {
+      bStatusBadge.textContent = 'Menunggu Pembayaran / Siap Bayar';
+      bStatusBadge.className = 'badge-status-ready';
+    }
+    if (balanceTitle) balanceTitle.textContent = 'Total Tagihan:';
+    if (confirmPaymentSuccessBtn) {
+      confirmPaymentSuccessBtn.disabled = false;
+      confirmPaymentSuccessBtn.innerHTML = `
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span>Konfirmasi Pembayaran Berhasil</span>
+      `;
+    }
+
+    // Prepare Tab 3 (Official Paid Receipt Data)
+    const randomTrx = String(Math.floor(1000 + Math.random() * 9000));
+    if (rKuitansiNo) rKuitansiNo.textContent = `KWT-TGIS-${now.getFullYear()}-${randomTrx}`;
+    if (rStampDate) rStampDate.textContent = formattedCreated.split(',')[0];
+    if (rPayerName) rPayerName.textContent = name;
+    if (rPayerOrg) rPayerOrg.textContent = org;
+    if (rPayerEmail) rPayerEmail.textContent = email;
+    if (rPaidMethod) rPaidMethod.textContent = state.paymentMethod;
+    if (rPaidTimestamp) rPaidTimestamp.textContent = formattedCreated;
+    if (rTotalIdr) rTotalIdr.textContent = totalIdr;
+    if (rLicenseKey) rLicenseKey.textContent = `TGIS-2026-PRO-${randomTrx}-${randomCode}`;
+
     checkoutStepForm.classList.add('hidden');
     checkoutStepInvoice.classList.remove('hidden');
   });
+
+  if (confirmPaymentSuccessBtn) {
+    confirmPaymentSuccessBtn.addEventListener('click', () => {
+      if (paidSuccessBanner) paidSuccessBanner.classList.remove('hidden');
+      if (bStatusBadge) {
+        bStatusBadge.textContent = 'LUNAS / TERVERIFIKASI';
+        bStatusBadge.className = 'badge-status-paid';
+      }
+      if (balanceTitle) balanceTitle.textContent = 'Status Tagihan:';
+      if (tabReceiptBtn) {
+        tabReceiptBtn.click();
+      }
+      confirmPaymentSuccessBtn.disabled = true;
+      confirmPaymentSuccessBtn.innerHTML = `
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span>Pembayaran Telah Lunas</span>
+      `;
+    });
+  }
 
   if (backToFormBtn) {
     backToFormBtn.addEventListener('click', () => {
