@@ -381,7 +381,6 @@
     const org = document.getElementById('buyerOrg').value.trim() || 'Lisensi Personal / Proyek';
     const email = document.getElementById('buyerEmail').value.trim();
     const phone = document.getElementById('buyerPhone').value.trim();
-    const notes = document.getElementById('buyerNotes').value.trim();
 
     if (!name || !email || !phone) {
       formError.textContent = 'Mohon lengkapi Nama Lengkap, Email Resmi, dan Nomor Telepon / WhatsApp.';
@@ -412,7 +411,6 @@
     document.getElementById('invBuyerEmail').textContent = email;
     document.getElementById('invMethod').textContent = state.paymentMethod;
     document.getElementById('invPhone').textContent = phone;
-    document.getElementById('invNotes').textContent = notes ? `Catatan: ${notes}` : '';
 
     const tbody = document.getElementById('invTableBody');
     tbody.innerHTML = '';
