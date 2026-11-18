@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TerraGIS — Lisensi &amp; Pembelian Sistem Web GIS Profesional ($115 USD)</title>
+  <meta name="description" content="Solusi sistem Web GIS profesional siap produksi dengan lisensi komersial penuh, integrasi data spasial, deployment cloud SSL, dan dukungan teknis 1 tahun seharga $115 USD." />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="TerraGIS Enterprise — Sistem Web GIS Profesional ($115 USD)" />
+  <meta property="og:description" content="Lisensi Web GIS komersial siap produksi lengkap dengan modul data spasial, konfigurasi cloud SSL, dan dukungan teknis 12 bulan seharga $115 USD." />
+  <meta property="og:locale" content="id_ID" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Subtle Architectural Grid Background -->
+  <div class="bg-pattern" aria-hidden="true"></div>
+
+  <!-- Navigation Header -->
+  <header class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <a href="#top" class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9" />
+            <ellipse cx="12" cy="12" rx="4" ry="9" />
+            <line x1="3.6" y1="9" x2="20.4" y2="9" />
+            <line x1="3.6" y1="15" x2="20.4" y2="15" />
+          </svg>
+        </span>
+        <span class="brand-name">Terra<strong>GIS</strong></span>
+        <span class="brand-edition">Enterprise</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Navigasi utama">
+        <a href="#pricing">Rincian Harga</a>
+        <a href="#platform">Arsitektur Peta</a>
+        <a href="#specifications">Spesifikasi</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="icon-btn" id="themeToggle" title="Ubah mode tampilan" aria-label="Ubah mode tampilan">
+          <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+          </svg>
+          <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <!-- Guest Login Button -->
+        <a href="login.html" class="btn btn-outline btn-sm" id="navLoginBtn">
+          <svg width="15" height="15" viewBox="0 0 48 48" aria-hidden="true">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+          </svg>
+          <span>Masuk</span>
+        </a>
+
+        <!-- Authenticated User Menu (Corner) -->
+        <div class="user-menu-wrap hidden" id="navUserMenu">
+          <button type="button" class="user-pill-btn" id="navUserTrigger" aria-expanded="false" aria-haspopup="true">
+            <span class="user-avatar user-avatar-sm" id="navUserAvatar">U</span>
+            <span class="user-pill-name" id="navUserName">User</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="user-dropdown hidden" id="navUserDropdown">
+            <div class="user-dropdown-head">
+              <strong id="dropdownUserName">-</strong>
+              <span id="dropdownUserEmail">-</span>
+              <span class="provider-chip" id="dropdownUserProvider">Akun Google</span>
+            </div>
+            <div class="user-dropdown-actions">
+              <a href="#pricing" class="dropdown-item" id="dropdownPayLink">Lanjutkan Pembayaran ($115)</a>
+              <a href="login.html" class="dropdown-item">Ganti Akun</a>
+              <button type="button" class="dropdown-item dropdown-danger" id="logoutBtn">Keluar</button>
+            </div>
+          </div>
+        </div>
+
+        <a href="#pricing" class="btn btn-primary btn-sm">
+          <span>Pesan Lisensi</span>
+          <span class="btn-price-tag mono">$115</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">
+            <span class="eyebrow-dot"></span>
+            <span>LISENSI KOMERSIAL WEB GIS • SIAP PRODUKSI</span>
+          </div>
+          <h1>
+            Sistem Web GIS Profesional dengan Struktur Harga Transparan
+          </h1>
+          <p class="hero-lead">
+            Bangun dan operasikan portal pemetaan geospasial berstandar industri untuk perusahaan, instansi, maupun konsultan. Seluruh modul inti, integrasi data spasial, deployment cloud SSL, dan dukungan teknis tersedia dalam satu paket komprehensif.
+          </p>
+
+          <div class="hero-offer-card">
+            <div class="offer-price-block">
+              <span class="offer-label">Total Investasi Paket Lengkap</span>
+              <div class="offer-figure">
+                <span class="offer-currency">$</span>
+                <span class="offer-number">115</span>
+                <span class="offer-decimal">.00</span>
+                <span class="offer-code">USD</span>
+              </div>
+              <p class="offer-caption">Pembayaran satu kali • Hak pakai komersial penuh • Bebas biaya langganan tersembunyi</p>
+            </div>
+            <div class="offer-actions">
+              <a href="#pricing" class="btn btn-primary btn-lg">
+                <span>Lanjutkan Pemesanan</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+              <a href="#specifications" class="btn btn-outline btn-lg">Spesifikasi Teknis</a>
+            </div>
+          </div>
+
+          <div class="hero-kpis">
+            <div class="kpi-item">
+              <strong class="mono">4 Modul Inti</strong>
+              <span>Paket Terintegrasi</span>
+            </div>
+            <div class="kpi-sep"></div>
+            <div class="kpi-item">
+              <strong class="mono">Full Source</strong>
+              <span>Kepemilikan Penuh</span>
+            </div>
+            <div class="kpi-sep"></div>
+            <div class="kpi-item">
+              <strong class="mono">12 Bulan</strong>
+              <span>Dukungan &amp; Update</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Executive Geospatial Viewport Showcase -->
+        <div class="hero-showcase">
+          <div class="viewport-frame">
+            <div class="viewport-topbar">
+              <div class="viewport-title">
+                <span class="status-indicator"></span>
+                <span class="mono">TERRAGIS ENGINE v4.2</span>
+              </div>
+              <span class="mono viewport-coords">WGS 84 • EPSG:4326</span>
+            </div>
+
+            <div class="viewport-canvas">
+              <svg viewBox="0 0 560 370" class="viewport-svg" role="img" aria-label="Visualisasi engine peta Web GIS TerraGIS">
+                <defs>
+                  <pattern id="heroGrid" width="35" height="35" patternUnits="userSpaceOnUse">
+                    <path d="M 35 0 L 0 0 0 35" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
+                  </pattern>
+                  <linearGradient id="zonePrimary" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#10B981" stop-opacity="0.34" />
+                    <stop offset="100%" stop-color="#0D9488" stop-opacity="0.08" />
+                  </linearGradient>
+                  <linearGradient id="zoneSecondary" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#0EA5E9" stop-opacity="0.30" />
+                    <stop offset="100%" stop-color="#2563EB" stop-opacity="0.08" />
+                  </linearGradient>
+                </defs>
+
+                <rect width="560" height="370" fill="url(#heroGrid)" />
+
+                <!-- Elevation Contours -->
+                <g stroke="#64748B" stroke-opacity="0.32" fill="none" stroke-width="1.2">
+                  <path d="M-10 92 C 110 48, 220 124, 345 78 C 445 42, 505 88, 575 64" stroke-dasharray="4 4" />
+                  <path d="M-10 185 C 120 142, 245 220, 370 165 C 460 128, 515 168, 575 148" />
+                  <path d="M-10 290 C 130 245, 275 318, 415 262 C 490 232, 535 262, 575 245" stroke-dasharray="4 4" />
+                </g>
+
+                <!-- Parcels / Administrative Polygons -->
+                <polygon points="78,94 226,72 268,164 192,226 72,188" fill="url(#zonePrimary)" stroke="#10B981" stroke-width="1.8" />
+                <polygon points="298,128 456,96 492,208 394,264 286,214" fill="url(#zoneSecondary)" stroke="#38BDF8" stroke-width="1.8" />
+
+                <!-- Corridor / Infrastructure Route -->
+                <polyline points="154,148 258,176 382,182 448,152" fill="none" stroke="#F59E0B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 5" />
+
+                <!-- Geospatial Nodes -->
+                <g>
+                  <circle cx="154" cy="148" r="11" fill="#10B981" fill-opacity="0.22" />
+                  <circle cx="154" cy="148" r="4.5" fill="#10B981" stroke="#0F172A" stroke-width="2" />
+                </g>
+                <g>
+                  <circle cx="382" cy="182" r="12" fill="#38BDF8" fill-opacity="0.24" />
+                  <circle cx="382" cy="182" r="4.5" fill="#38BDF8" stroke="#0F172A" stroke-width="2" />
+                </g>
+                <g>
+                  <circle cx="448" cy="152" r="10" fill="#F59E0B" fill-opacity="0.24" />
+                  <circle cx="448" cy="152" r="4.5" fill="#F59E0B" stroke="#0F172A" stroke-width="2" />
+                </g>
+
+                <!-- North Compass & Scale Bar -->
+                <g transform="translate(514, 34)" stroke="#94A3B8" stroke-width="1.4" fill="none">
+                  <circle cx="0" cy="0" r="14" stroke-opacity="0.4" />
+                  <polygon points="0,-9 3.5,3 0,0 -3.5,3" fill="#10B981" stroke="none" />
+                  <text x="0" y="-17" text-anchor="middle" fill="#CBD5E1" font-size="8" font-family="JetBrains Mono, monospace">N</text>
+                </g>
+                <g transform="translate(22, 344)">
+                  <line x1="0" y1="0" x2="72" y2="0" stroke="#CBD5E1" stroke-width="1.5" />
+                  <line x1="0" y1="-4" x2="0" y2="4" stroke="#CBD5E1" stroke-width="1.5" />
+                  <line x1="72" y1="-4" x2="72" y2="4" stroke="#CBD5E1" stroke-width="1.5" />
+                  <text x="80" y="3" fill="#94A3B8" font-size="9" font-family="JetBrains Mono, monospace">5 km</text>
+                </g>
+              </svg>
+
+              <div class="viewport-badge badge-tl">
+                <span class="dot-emerald"></span>
+                <div>
+                  <small>Layer Terindeks</small>
+                  <strong class="mono">1,248 Poligon</strong>
+                </div>
+              </div>
+
+              <div class="viewport-badge badge-br">
+                <span class="dot-sky"></span>
+                <div>
+                  <small>Paket Lisensi</small>
+                  <strong class="mono">$115.00 USD</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="viewport-footer">
+              <div class="tech-pills">
+                <span>PostGIS</span>
+                <span>GeoJSON</span>
+                <span>Shapefile</span>
+                <span>WMS / WMTS</span>
+              </div>
+              <span class="mono viewport-uptime">SLA 99.9%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Standards & Compatibility Bar -->
+    <section class="standards-strip" aria-label="Standar teknologi geospasial">
+      <div class="container standards-inner">
+        <span class="standards-label">KOMPATIBEL DENGAN STANDAR GEOSPASIAL</span>
+        <div class="standards-list mono">
+          <span>OGC WMS / WFS</span>
+          <span>PostgreSQL / PostGIS</span>
+          <span>GeoJSON RFC 7946</span>
+          <span>WGS 84 (EPSG:4326)</span>
+          <span>HTTPS / TLS 1.3</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing & License Configurator Section -->
+    <section class="section" id="pricing">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-eyebrow">STRUKTUR HARGA &amp; LISENSI</span>
+            <h2>Rincian Pembelian Paket Web GIS — <span class="text-accent">$115.00 USD</span></h2>
+            <p class="section-desc">
+              Setiap komponen disusun secara transparan dengan total paket lengkap tepat <strong>$115.00 USD</strong>. Anda dapat meninjau rincian modul atau menyesuaikan komponen sesuai kebutuhan operasional.
+            </p>
+          </div>
+          <div class="currency-toggle" role="group" aria-label="Pengaturan mata uang">
+            <button type="button" class="currency-btn active" data-currency="USD">USD ($)</button>
+            <button type="button" class="currency-btn" data-currency="BOTH">USD + Referensi IDR</button>
+          </div>
+        </div>
+
+        <div class="pricing-grid">
+          <!-- Modules Column -->
+          <div class="modules-col">
+            <div class="bundle-callout">
+              <div class="bundle-callout-copy">
+                <span class="pill-primary">PAKET LENGKAP SIAP PAKAI</span>
+                <h3>Lisensi TerraGIS Enterprise (4 Komponen Terpadu)</h3>
+                <p>Mencakup core engine peta, modul data spasial, konfigurasi cloud SSL, serta dukungan teknis selama 12 bulan.</p>
+              </div>
+              <div class="bundle-callout-meta">
+                <div class="bundle-price mono">$115.00 USD</div>
+                <button type="button" class="btn-text" id="selectAllBundleBtn">Pilih Semua Komponen ($115)</button>
+              </div>
+            </div>
+
+            <div class="module-stack" id="moduleList">
+              <!-- Component 1 -->
+              <article class="module-card selected" data-id="core" data-price="65">
+                <div class="module-header">
+                  <label class="checkbox-wrap">
+                    <input type="checkbox" class="module-checkbox" checked data-id="core" />
+                    <span class="checkbox-box" aria-hidden="true"></span>
+                  </label>
+                  <div class="module-copy">
+                    <div class="module-title-bar">
+                      <h4>1. Lisensi Core Web GIS Platform</h4>
+                      <span class="tag-core">Komponen Utama</span>
+                    </div>
+                    <p>Platform peta web berkinerja tinggi dengan manajemen multi-layer, pencarian koordinat presisi, pengukuran jarak &amp; luas area, serta hak akses berbasis peran.</p>
+                  </div>
+                  <div class="module-pricing">
+                    <span class="module-usd mono">$65.00</span>
+                    <span class="module-idr mono" data-idr-for="65"></span>
+                  </div>
+                </div>
+                <ul class="module-specs">
+                  <li>Antarmuka peta responsif dengan manajemen layer tanpa batas</li>
+                  <li>Query spasial, filter atribut, analisis buffer, dan info popup kustom</li>
+                  <li>Arsitektur siap integrasi Leaflet / MapLibre GL dan PostgreSQL/PostGIS</li>
+                </ul>
+              </article>
+
+              <!-- Component 2 -->
+              <article class="module-card selected" data-id="spatial" data-price="25">
+                <div class="module-header">
+                  <label class="checkbox-wrap">
+                    <input type="checkbox" class="module-checkbox" checked data-id="spatial" />
+                    <span class="checkbox-box" aria-hidden="true"></span>
+                  </label>
+                  <div class="module-copy">
+                    <div class="module-title-bar">
+                      <h4>2. Modul Integrasi Data Spasial &amp; Basemap HD</h4>
+                      <span class="tag-neutral">Data Engine</span>
+                    </div>
+                    <p>Pengolah data geospasial multi-format dilengkapi pengalih basemap satelit resolusi tinggi, kontur topografi, dan jaringan jalan.</p>
+                  </div>
+                  <div class="module-pricing">
+                    <span class="module-usd mono">$25.00</span>
+                    <span class="module-idr mono" data-idr-for="25"></span>
+                  </div>
+                </div>
+                <ul class="module-specs">
+                  <li>Impor dan validasi GeoJSON, Shapefile (.zip), KML/KMZ, serta CSV koordinat</li>
+                  <li>Dukungan multi-basemap (Citra Satelit, Topografi, Street Map, Carto)</li>
+                  <li>Ekspor layout peta beserta legenda ke format PDF dan PNG siap cetak</li>
+                </ul>
+              </article>
+
+              <!-- Component 3 -->
+              <article class="module-card selected" data-id="deploy" data-price="15">
+                <div class="module-header">
+                  <label class="checkbox-wrap">
+                    <input type="checkbox" class="module-checkbox" checked data-id="deploy" />
+                    <span class="checkbox-box" aria-hidden="true"></span>
+                  </label>
+                  <div class="module-copy">
+                    <div class="module-title-bar">
+                      <h4>3. Konfigurasi Server Cloud, Domain &amp; SSL/TLS</h4>
+                      <span class="tag-neutral">Infrastruktur</span>
+                    </div>
+                    <p>Implementasi langsung pada VPS atau server cloud perusahaan Anda lengkap dengan pengaturan domain, caching tile, dan enkripsi HTTPS.</p>
+                  </div>
+                  <div class="module-pricing">
+                    <span class="module-usd mono">$15.00</span>
+                    <span class="module-idr mono" data-idr-for="15"></span>
+                  </div>
+                </div>
+                <ul class="module-specs">
+                  <li>Build produksi teroptimasi dengan konfigurasi Nginx / Docker container</li>
+                  <li>Integrasi custom domain instansi dan sertifikat keamanan SSL otomatis</li>
+                  <li>Pengaturan rutinitas backup database spasial terjadwal</li>
+                </ul>
+              </article>
+
+              <!-- Component 4 -->
+              <article class="module-card selected" data-id="support" data-price="10">
+                <div class="module-header">
+                  <label class="checkbox-wrap">
+                    <input type="checkbox" class="module-checkbox" checked data-id="support" />
+                    <span class="checkbox-box" aria-hidden="true"></span>
+                  </label>
+                  <div class="module-copy">
+                    <div class="module-title-bar">
+                      <h4>4. Dukungan Teknis &amp; Dokumentasi API (12 Bulan)</h4>
+                      <span class="tag-neutral">Layanan SLA</span>
+                    </div>
+                    <p>Panduan administrator lengkap, dokumentasi REST/Geo API, pembaruan keamanan berkala, serta layanan dukungan prioritas selama satu tahun.</p>
+                  </div>
+                  <div class="module-pricing">
+                    <span class="module-usd mono">$10.00</span>
+                    <span class="module-idr mono" data-idr-for="10"></span>
+                  </div>
+                </div>
+                <ul class="module-specs">
+                  <li>Manual instalasi, pengelolaan layer, dan dokumentasi API berbahasa Indonesia</li>
+                  <li>Akses kanal dukungan teknis prioritas via Email dan WhatsApp Bisnis</li>
+                  <li>Pembaruan minor serta patch keamanan gratis sepanjang 12 bulan pertama</li>
+                </ul>
+              </article>
+            </div>
+          </div>
+
+          <!-- Sticky Order Summary Column -->
+          <aside class="summary-col">
+            <div class="summary-card">
+              <div class="summary-top">
+                <div>
+                  <span class="summary-label">RINGKASAN TRANSAKSI</span>
+                  <h3>Detail Pembelian</h3>
+                </div>
+                <div class="payment-user-corner">
+                  <div class="corner-user-badge hidden" id="summaryUserBadge" title="Akun aktif untuk pembayaran">
+                    <span class="user-avatar user-avatar-xs" id="summaryUserAvatar">U</span>
+                    <div class="corner-user-meta">
+                      <small>User Aktif</small>
+                      <strong id="summaryUserName">-</strong>
+                    </div>
+                  </div>
+                  <a href="login.html?redirect=checkout" class="corner-login-pill" id="summaryLoginLink">
+                    <svg width="13" height="13" viewBox="0 0 48 48" aria-hidden="true">
+                      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+                      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+                      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+                      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+                    </svg>
+                    <span>Masuk Google</span>
+                  </a>
+                </div>
+              </div>
+
+              <div class="summary-list" id="summaryItems"></div>
+
+              <div class="summary-rule"></div>
+
+              <div class="summary-breakdown">
+                <div class="breakdown-row">
+                  <span>Subtotal (<span id="selectedCount">4</span> komponen)</span>
+                  <span class="mono" id="subtotalDisplay">$115.00 USD</span>
+                </div>
+                <div class="breakdown-row">
+                  <span>Biaya Platform &amp; Administrasi</span>
+                  <span class="mono included-text">$0.00 (Termasuk)</span>
+                </div>
+                <div class="breakdown-row breakdown-total">
+                  <div>
+                    <strong>Total Pembayaran</strong>
+                    <span class="idr-note mono" id="totalIdrEstimate"></span>
+                  </div>
+                  <div class="total-readout">
+                    <span class="total-value mono" id="totalDisplay">$115.00</span>
+                    <span class="total-curr mono">USD</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Payment Method Selector -->
+              <div class="payment-block">
+                <span class="block-label">Metode Pembayaran</span>
+                <div class="payment-options" id="paymentMethods" role="radiogroup" aria-label="Pilih metode pembayaran">
+                  <button type="button" class="payment-btn active" data-method="Kartu Kredit / Debit (Visa &amp; Mastercard)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                      <line x1="2" y1="10" x2="22" y2="10"></line>
+                    </svg>
+                    <span>Kartu Kredit</span>
+                  </button>
+                  <button type="button" class="payment-btn" data-method="PayPal International (USD)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="2" y1="12" x2="22" y2="12"></line>
+                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    <span>PayPal</span>
+                  </button>
+                  <button type="button" class="payment-btn" data-method="Transfer Bank / Virtual Account">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 21h18"></path>
+                      <path d="M5 21V9"></path>
+                      <path d="M19 21V9"></path>
+                      <path d="M9 21v-8"></path>
+                      <path d="M15 21v-8"></path>
+                      <polygon points="12 2 2 7 22 7 12 2"></polygon>
+                    </svg>
+                    <span>Transfer Bank</span>
+                  </button>
+                  <button type="button" class="payment-btn" data-method="QRIS / E-Wallet (Konversi USD)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="3" width="7" height="7"></rect>
+                      <rect x="14" y="3" width="7" height="7"></rect>
+                      <rect x="3" y="14" width="7" height="7"></rect>
+                      <path d="M14 14h3v3h-3zM18 18h3v3h-3zM14 20h2"></path>
+                    </svg>
+                    <span>QRIS</span>
+                  </button>
+                </div>
+              </div>
+
+              <button type="button" class="btn btn-primary btn-block btn-lg" id="openCheckoutBtn">
+                <span id="checkoutBtnText">Lanjutkan Pembayaran — $115.00 USD</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+
+              <div class="security-note">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  <polyline points="9 12 11 14 15 10"></polyline>
+                </svg>
+                <span>Transaksi terenkripsi TLS. Invoice resmi diterbitkan secara otomatis untuk keperluan pembukuan dan pengadaan.</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Geospatial Engine Section -->
+    <section class="section section-muted" id="platform">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-eyebrow">ARSITEKTUR PETA &amp; ANALISIS</span>
+            <h2>Manajemen Layer Spasial &amp; Inspeksi Atribut Real-Time</h2>
+            <p class="section-desc">
+              Kendalikan visibilitas layer vektor, telusuri koordinat geografis secara presisi, dan inspeksi metadata setiap poligon maupun titik aset langsung dari antarmuka Web GIS.
+            </p>
+          </div>
+        </div>
+
+        <div class="gis-workbench">
+          <aside class="gis-panel">
+            <div class="gis-panel-head">
+              <h4>Kontrol Layer</h4>
+              <span class="mono crs-pill">EPSG:4326</span>
+            </div>
+
+            <div class="layer-list">
+              <label class="layer-item">
+                <input type="checkbox" checked data-layer="layer-admin" />
+                <span class="swatch emerald"></span>
+                <span>Batas Wilayah &amp; Zonasi</span>
+              </label>
+              <label class="layer-item">
+                <input type="checkbox" checked data-layer="layer-roads" />
+                <span class="swatch amber"></span>
+                <span>Jaringan Jalan &amp; Koridor</span>
+              </label>
+              <label class="layer-item">
+                <input type="checkbox" checked data-layer="layer-points" />
+                <span class="swatch sky"></span>
+                <span>Titik Aset &amp; Stasiun Monitoring</span>
+              </label>
+              <label class="layer-item">
+                <input type="checkbox" checked data-layer="layer-contours" />
+                <span class="swatch slate"></span>
+                <span>Garis Kontur Elevasi</span>
+              </label>
+            </div>
+
+            <div class="inspector-card">
+              <span class="inspector-title">INSPEKTOR ATRIBUT SPASIAL</span>
+              <div id="featureInspector">
+                <strong>Pilih objek pada peta</strong>
+                <p>Klik poligon atau titik aset untuk menampilkan metadata GeoJSON, luas area, dan koordinat.</p>
+              </div>
+            </div>
+
+            <div class="zoom-toolbar">
+              <button type="button" class="tool-btn" id="zoomOutBtn" aria-label="Perkecil peta">−</button>
+              <span class="mono zoom-level" id="zoomReadout">100%</span>
+              <button type="button" class="tool-btn" id="zoomInBtn" aria-label="Perbesar peta">+</button>
+              <button type="button" class="tool-btn tool-reset" id="zoomResetBtn">Reset Tampilan</button>
+            </div>
+          </aside>
+
+          <div class="gis-stage" id="gisCanvasWrap">
+            <div class="stage-hud">
+              <span class="hud-chip mono" id="liveCoords">LAT: -6.9175 | LNG: 107.6191</span>
+              <span class="hud-chip mono">SKALA 1:25.000</span>
+            </div>
+
+            <svg viewBox="0 0 800 470" class="gis-svg" id="gisInteractiveSvg" role="img" aria-label="Antarmuka peta Web GIS interaktif">
+              <defs>
+                <pattern id="workbenchGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(148,163,184,0.11)" stroke-width="1" />
+                </pattern>
+                <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#0EA5E9" stop-opacity="0.38" />
+                  <stop offset="100%" stop-color="#0EA5E9" stop-opacity="0" />
+                </radialGradient>
+              </defs>
+
+              <rect width="800" height="470" fill="url(#workbenchGrid)" />
+
+              <g id="mapViewport" transform="translate(0,0) scale(1)">
+                <!-- Layer: Elevation Contours -->
+                <g id="layer-contours" class="map-layer">
+                  <path d="M-20 112 C 120 62, 265 152, 412 96 C 562 42, 682 122, 820 82" fill="none" stroke="#94A3B8" stroke-opacity="0.38" stroke-width="1.4" stroke-dasharray="5 5" />
+                  <path d="M-20 208 C 142 168, 292 248, 452 188 C 602 132, 702 202, 820 168" fill="none" stroke="#94A3B8" stroke-opacity="0.30" stroke-width="1.4" stroke-dasharray="5 5" />
+                  <path d="M-20 330 C 162 284, 322 368, 492 304 C 642 248, 722 318, 820 288" fill="none" stroke="#94A3B8" stroke-opacity="0.30" stroke-width="1.4" stroke-dasharray="5 5" />
+                </g>
+
+                <!-- Layer: Administrative Polygons -->
+                <g id="layer-admin" class="map-layer">
+                  <polygon
+                    class="interactive-feature"
+                    data-title="Zona A — Kawasan Industri Terpadu"
+                    data-type="Poligon / GeoJSON"
+                    data-area="142.8 Hektar"
+                    data-coord="-6.8921, 107.5812"
+                    points="96,98 276,80 322,194 226,260 88,214"
+                    fill="rgba(16, 185, 129, 0.2)"
+                    stroke="#10B981"
+                    stroke-width="2"
+                  />
+                  <polygon
+                    class="interactive-feature"
+                    data-title="Zona B — Pusat Logistik &amp; Distribusi"
+                    data-type="Poligon / PostGIS"
+                    data-area="218.4 Hektar"
+                    data-coord="-6.9240, 107.6488"
+                    points="356,150 568,114 632,250 506,334 342,266"
+                    fill="rgba(14, 165, 233, 0.18)"
+                    stroke="#38BDF8"
+                    stroke-width="2"
+                  />
+                  <polygon
+                    class="interactive-feature"
+                    data-title="Zona C — Kawasan Konservasi DAS"
+                    data-type="Poligon / Shapefile"
+                    data-area="96.5 Hektar"
+                    data-coord="-6.9614, 107.6105"
+                    points="166,288 318,276 378,384 220,412 134,350"
+                    fill="rgba(52, 211, 153, 0.16)"
+                    stroke="#34D399"
+                    stroke-width="2"
+                  />
+                </g>
+
+                <!-- Layer: Roads & Corridors -->
+                <g id="layer-roads" class="map-layer">
+                  <path d="M55 248 Q 206 188, 366 218 T 736 168" fill="none" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" />
+                  <path d="M236 44 C 258 148, 294 248, 364 428" fill="none" stroke="#FBBF24" stroke-width="2" stroke-dasharray="8 6" />
+                </g>
+
+                <!-- Layer: Points / Field Assets -->
+                <g id="layer-points" class="map-layer">
+                  <circle cx="206" cy="164" r="28" fill="url(#nodeGlow)" />
+                  <circle cx="486" cy="214" r="34" fill="url(#nodeGlow)" />
+
+                  <g class="interactive-feature map-pin" data-title="Stasiun Pemantau #01" data-type="Titik Sensor Lapangan" data-area="Elevasi 712 mdpl" data-coord="-6.8984, 107.5903">
+                    <circle cx="206" cy="164" r="11" fill="#38BDF8" fill-opacity="0.24" />
+                    <circle cx="206" cy="164" r="5.5" fill="#38BDF8" stroke="#0F172A" stroke-width="2" />
+                  </g>
+                  <g class="interactive-feature map-pin" data-title="Hub Distribusi Utama" data-type="Titik Infrastruktur" data-area="Kapasitas 450 Unit" data-coord="-6.9212, 107.6510">
+                    <circle cx="486" cy="214" r="12" fill="#10B981" fill-opacity="0.26" />
+                    <circle cx="486" cy="214" r="6" fill="#10B981" stroke="#0F172A" stroke-width="2" />
+                  </g>
+                  <g class="interactive-feature map-pin" data-title="Pos Hidrologi Selatan" data-type="Titik Pemantau Air" data-area="Elevasi 645 mdpl" data-coord="-6.9548, 107.6142">
+                    <circle cx="268" cy="344" r="10.5" fill="#F59E0B" fill-opacity="0.26" />
+                    <circle cx="268" cy="344" r="5.5" fill="#F59E0B" stroke="#0F172A" stroke-width="2" />
+                  </g>
+                  <g class="interactive-feature map-pin" data-title="Menara Relai Timur" data-type="Titik Telekomunikasi" data-area="Radius 12 km" data-coord="-6.9055, 107.7024">
+                    <circle cx="646" cy="178" r="10.5" fill="#38BDF8" fill-opacity="0.26" />
+                    <circle cx="646" cy="178" r="5.5" fill="#38BDF8" stroke="#0F172A" stroke-width="2" />
+                  </g>
+                </g>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Technical Deliverables & Specifications Section -->
+    <section class="section" id="specifications">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-eyebrow">SPESIFIKASI &amp; DELIVERABLES</span>
+            <h2>Aset Produksi dalam Paket $115.00 USD</h2>
+            <p class="section-desc">
+              Seluruh kode sumber, konfigurasi basis data spasial, hingga dokumen lisensi diserahkan penuh untuk mendukung implementasi jangka panjang organisasi Anda.
+            </p>
+          </div>
+        </div>
+
+        <div class="specs-grid">
+          <div class="spec-card">
+            <div class="spec-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+            </div>
+            <h3>Source Code Terstruktur</h3>
+            <p>Akses penuh kode frontend dan backend yang modular, bersih, serta bebas enkripsi untuk kemudahan pengembangan internal tim Anda.</p>
+          </div>
+
+          <div class="spec-card">
+            <div class="spec-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+              </svg>
+            </div>
+            <h3>Skema Basis Data Spasial</h3>
+            <p>Struktur tabel PostgreSQL/PostGIS dan skema GeoJSON siap produksi lengkap dengan indexing spasial untuk query berkecepatan tinggi.</p>
+          </div>
+
+          <div class="spec-card">
+            <div class="spec-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <path d="M9 12l2 2 4-4"></path>
+              </svg>
+            </div>
+            <h3>Deployment &amp; Keamanan SSL</h3>
+            <p>Instalasi langsung ke lingkungan produksi dengan konfigurasi HTTPS/TLS, proteksi CORS, dan manajemen otorisasi pengguna.</p>
+          </div>
+
+          <div class="spec-card">
+            <div class="spec-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+            </div>
+            <h3>Lisensi Resmi &amp; Invoice</h3>
+            <p>Sertifikat lisensi penggunaan komersial dan invoice resmi senilai $115.00 USD yang sah untuk kebutuhan administrasi dan audit pengadaan.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section section-muted" id="faq">
+      <div class="container faq-wrap">
+        <div class="section-header centered">
+          <span class="section-eyebrow">INFORMASI PEMBELIAN</span>
+          <h2>Pertanyaan yang Sering Diajukan</h2>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item" open>
+            <summary>Apakah total $115.00 USD sudah mencakup seluruh modul tanpa biaya tambahan?</summary>
+            <p>Ya. Harga $115.00 USD mencakup empat komponen lengkap: Lisensi Core Platform ($65), Modul Data Spasial &amp; Basemap HD ($25), Konfigurasi Server Cloud &amp; SSL ($15), serta Dukungan Teknis &amp; Dokumentasi API 12 Bulan ($10). Tidak ada biaya platform tambahan.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Bagaimana skema lisensi untuk pembayaran $115.00 USD ini?</summary>
+            <p>Pembelian bersifat sekali bayar (one-time license) untuk hak penggunaan komersial penuh. Anda juga memperoleh layanan dukungan teknis serta pembaruan keamanan selama 12 bulan sejak tanggal penerbitan invoice.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Format data geospasial apa saja yang kompatibel dengan TerraGIS?</summary>
+            <p>TerraGIS mendukung standar industri seperti GeoJSON, Shapefile (.shp dalam arsip .zip), KML/KMZ, CSV berkoordinat, koneksi database PostgreSQL/PostGIS, serta layanan peta OGC WMS/WMTS.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Apakah transaksi dapat diselesaikan dalam mata uang Rupiah (IDR)?</summary>
+            <p>Dapat. Tagihan standar ditetapkan sebesar $115.00 USD dan dapat dibayarkan melalui Kartu Kredit/Debit, PayPal, Transfer Bank/Virtual Account, maupun QRIS dengan konversi kurs harian yang berlaku saat transaksi.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Corporate Footer -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-about">
+        <a href="#top" class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="9" />
+              <ellipse cx="12" cy="12" rx="4" ry="9" />
+              <line x1="3.6" y1="9" x2="20.4" y2="9" />
+              <line x1="3.6" y1="15" x2="20.4" y2="15" />
+            </svg>
+          </span>
+          <span class="brand-name">Terra<strong>GIS</strong></span>
+        </a>
+        <p>Penyedia platform Web GIS profesional siap produksi untuk visualisasi aset, analisis wilayah, dan pengelolaan data geospasial terintegrasi.</p>
+      </div>
+
+      <div class="footer-col">
+        <h5>Navigasi</h5>
+        <a href="#pricing">Rincian Harga ($115 USD)</a>
+        <a href="#platform">Arsitektur Peta</a>
+        <a href="#specifications">Spesifikasi Teknis</a>
+        <a href="#faq">FAQ</a>
+      </div>
+
+      <div class="footer-col">
+        <h5>Standar Sistem</h5>
+        <span>PostgreSQL / PostGIS</span>
+        <span>OGC WMS &amp; WFS</span>
+        <span>GeoJSON &amp; Shapefile</span>
+        <span>SSL / TLS 1.3</span>
+      </div>
+
+      <div class="footer-col">
+        <h5>Ringkasan Penawaran</h5>
+        <span class="mono footer-price">Paket Lengkap: $115.00 USD</span>
+        <span>Lisensi Komersial Sekali Bayar</span>
+        <span>Dukungan Teknis 12 Bulan</span>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <span>© 2026 TerraGIS Solutions. Seluruh hak cipta dilindungi.</span>
+      <span class="mono">Lisensi Web GIS Enterprise • $115.00 USD</span>
+    </div>
+  </footer>
+
+  <!-- Checkout & Official Invoice Modal -->
+  <div class="modal-backdrop" id="checkoutModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-dialog">
+      <div class="modal-topbar no-print">
+        <span class="section-eyebrow modal-topbar-kicker">KONFIRMASI PEMBAYARAN</span>
+        <div class="modal-topbar-right">
+          <!-- Signed-in User Badge in Payment Corner -->
+          <div class="modal-user-chip hidden" id="modalUserBadge">
+            <span class="user-avatar user-avatar-xs" id="modalUserAvatar">U</span>
+            <div class="modal-user-info">
+              <strong id="modalUserName">-</strong>
+              <span id="modalUserEmail">-</span>
+            </div>
+          </div>
+          <a href="login.html?redirect=checkout" class="corner-login-pill" id="modalLoginLink">
+            <svg width="13" height="13" viewBox="0 0 48 48" aria-hidden="true">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+            </svg>
+            <span>Masuk Google</span>
+          </a>
+          <button type="button" class="modal-close-inline" id="closeModalBtn" aria-label="Tutup jendela">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 1: Buyer & Order Form -->
+      <div id="checkoutStepForm">
+        <div class="modal-head">
+          <h3 id="modalTitle">Formulir Pembelian Lisensi Web GIS</h3>
+          <p>Isi data penerima lisensi di bawah ini untuk menerbitkan invoice resmi dan instruksi pembayaran.</p>
+        </div>
+
+        <div class="modal-auth-prompt" id="modalAuthPrompt">
+          <span>Belum masuk akun? Masuk dengan akun Google agar transaksi &amp; lisensi terhubung ke profil Anda.</span>
+          <a href="login.html?redirect=checkout" class="btn btn-outline btn-sm">Masuk dengan Google</a>
+        </div>
+
+        <div class="modal-summary-bar">
+          <div>
+            <span class="muted">Total Tagihan</span>
+            <strong class="mono" id="modalTotalAmount">$115.00 USD</strong>
+          </div>
+          <div class="align-right">
+            <span class="muted">Metode Pembayaran</span>
+            <strong id="modalSelectedMethod">Kartu Kredit / Debit</strong>
+          </div>
+        </div>
+
+        <form id="checkoutForm" class="checkout-form" novalidate>
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="buyerName">Nama Lengkap *</label>
+              <input type="text" id="buyerName" name="buyerName" placeholder="Contoh: Hendra Wijaya" required />
+            </div>
+            <div class="form-field">
+              <label for="buyerOrg">Perusahaan / Instansi</label>
+              <input type="text" id="buyerOrg" name="buyerOrg" placeholder="Contoh: PT Geospasial Nusantara" />
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="buyerEmail">Email Resmi Penerima Lisensi *</label>
+              <input type="email" id="buyerEmail" name="buyerEmail" placeholder="nama@perusahaan.co.id" required />
+            </div>
+            <div class="form-field">
+              <label for="buyerPhone">Nomor Telepon / WhatsApp *</label>
+              <input type="tel" id="buyerPhone" name="buyerPhone" placeholder="+62 812-3456-7890" required />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="buyerNotes">Domain Target / Catatan Implementasi (Opsional)</label>
+            <textarea id="buyerNotes" name="buyerNotes" rows="2" placeholder="Contoh: Deployment pada subdomain gis.perusahaan.co.id"></textarea>
+          </div>
+
+          <p class="form-error" id="formError" role="alert"></p>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" id="cancelModalBtn">Batal</button>
+            <button type="submit" class="btn btn-primary btn-lg" id="confirmPayBtn">
+              Terbitkan Invoice ($115.00 USD)
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 2: Official Digital Invoice -->
+      <div id="checkoutStepInvoice" class="hidden">
+        <div class="invoice-doc" id="printableInvoice">
+          <div class="invoice-head">
+            <div>
+              <span class="invoice-badge">INVOICE RESMI</span>
+              <h3>Pembelian Sistem Web GIS</h3>
+              <p class="mono muted" id="invNumber">INV-TGIS-2026-0115</p>
+            </div>
+            <div class="invoice-issuer">
+              <strong>TerraGIS Solutions</strong>
+              <span class="muted" id="invDate">18 Nov 2026</span>
+            </div>
+          </div>
+
+          <div class="invoice-meta-grid">
+            <div>
+              <small>DITAGIHKAN KEPADA</small>
+              <strong id="invBuyerName">-</strong>
+              <span id="invBuyerOrg">-</span>
+              <span id="invBuyerEmail">-</span>
+            </div>
+            <div>
+              <small>INFORMASI PEMBAYARAN</small>
+              <strong id="invMethod">-</strong>
+              <span id="invPhone">-</span>
+              <span id="invNotes" class="muted"></span>
+            </div>
+          </div>
+
+          <table class="invoice-table">
+            <thead>
+              <tr>
+                <th>Deskripsi Komponen</th>
+                <th class="align-right">Jumlah (USD)</th>
+              </tr>
+            </thead>
+            <tbody id="invTableBody"></tbody>
+            <tfoot>
+              <tr>
+                <td>Biaya Layanan &amp; Administrasi</td>
+                <td class="align-right mono">$0.00</td>
+              </tr>
+              <tr class="invoice-total-row">
+                <td><strong>TOTAL PEMBAYARAN</strong></td>
+                <td class="align-right mono"><strong id="invGrandTotal">$115.00 USD</strong></td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <p class="invoice-note">
+            Referensi konversi estimasi: <span class="mono" id="invIdrRef"></span>. Paket source code, kredensial lisensi, dan jadwal deployment dikirimkan ke email penerima setelah verifikasi pembayaran selesai.
+          </p>
+        </div>
+
+        <div class="modal-footer no-print">
+          <button type="button" class="btn btn-outline" id="backToEditBtn">Ubah Data</button>
+          <button type="button" class="btn btn-primary" id="printInvoiceBtn">Cetak / Simpan PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,526 @@
+(() => {
+  'use strict';
+
+  const USD_TO_IDR = 16000;
+
+  const MODULES = [
+    {
+      id: 'core',
+      name: 'Lisensi Core Web GIS Platform',
+      price: 65
+    },
+    {
+      id: 'spatial',
+      name: 'Modul Integrasi Data Spasial & Basemap HD',
+      price: 25
+    },
+    {
+      id: 'deploy',
+      name: 'Konfigurasi Server Cloud, Domain & SSL/TLS',
+      price: 15
+    },
+    {
+      id: 'support',
+      name: 'Dukungan Teknis & Dokumentasi API (12 Bulan)',
+      price: 10
+    }
+  ];
+
+  const state = {
+    selectedIds: new Set(MODULES.map((m) => m.id)),
+    showIdr: false,
+    paymentMethod: 'Kartu Kredit / Debit (Visa & Mastercard)',
+    zoom: 1,
+    currentUser: null
+  };
+
+  // DOM References
+  const htmlEl = document.documentElement;
+  const themeToggle = document.getElementById('themeToggle');
+  const currencyBtns = document.querySelectorAll('.currency-btn');
+  const moduleCards = document.querySelectorAll('.module-card');
+  const moduleCheckboxes = document.querySelectorAll('.module-checkbox');
+  const selectAllBundleBtn = document.getElementById('selectAllBundleBtn');
+  const summaryItemsEl = document.getElementById('summaryItems');
+  const selectedCountEl = document.getElementById('selectedCount');
+  const subtotalDisplayEl = document.getElementById('subtotalDisplay');
+  const totalDisplayEl = document.getElementById('totalDisplay');
+  const totalIdrEstimateEl = document.getElementById('totalIdrEstimate');
+  const checkoutBtnTextEl = document.getElementById('checkoutBtnText');
+  const openCheckoutBtn = document.getElementById('openCheckoutBtn');
+  const paymentBtns = document.querySelectorAll('.payment-btn');
+
+  // Modal Elements
+  const checkoutModal = document.getElementById('checkoutModal');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+  const cancelModalBtn = document.getElementById('cancelModalBtn');
+  const checkoutStepForm = document.getElementById('checkoutStepForm');
+  const checkoutStepInvoice = document.getElementById('checkoutStepInvoice');
+  const checkoutForm = document.getElementById('checkoutForm');
+  const formError = document.getElementById('formError');
+  const modalTotalAmount = document.getElementById('modalTotalAmount');
+  const modalSelectedMethod = document.getElementById('modalSelectedMethod');
+  const confirmPayBtn = document.getElementById('confirmPayBtn');
+  const backToEditBtn = document.getElementById('backToEditBtn');
+  const printInvoiceBtn = document.getElementById('printInvoiceBtn');
+
+  // Auth / User Corner Elements
+  const navLoginBtn = document.getElementById('navLoginBtn');
+  const navUserMenu = document.getElementById('navUserMenu');
+  const navUserTrigger = document.getElementById('navUserTrigger');
+  const navUserDropdown = document.getElementById('navUserDropdown');
+  const navUserAvatar = document.getElementById('navUserAvatar');
+  const navUserName = document.getElementById('navUserName');
+  const dropdownUserName = document.getElementById('dropdownUserName');
+  const dropdownUserEmail = document.getElementById('dropdownUserEmail');
+  const dropdownUserProvider = document.getElementById('dropdownUserProvider');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  const summaryUserBadge = document.getElementById('summaryUserBadge');
+  const summaryUserAvatar = document.getElementById('summaryUserAvatar');
+  const summaryUserName = document.getElementById('summaryUserName');
+  const summaryLoginLink = document.getElementById('summaryLoginLink');
+
+  const modalUserBadge = document.getElementById('modalUserBadge');
+  const modalUserAvatar = document.getElementById('modalUserAvatar');
+  const modalUserName = document.getElementById('modalUserName');
+  const modalUserEmail = document.getElementById('modalUserEmail');
+  const modalLoginLink = document.getElementById('modalLoginLink');
+  const modalAuthPrompt = document.getElementById('modalAuthPrompt');
+
+  // Geospatial Map Elements
+  const layerToggles = document.querySelectorAll('[data-layer]');
+  const gisInteractiveSvg = document.getElementById('gisInteractiveSvg');
+  const mapViewport = document.getElementById('mapViewport');
+  const liveCoords = document.getElementById('liveCoords');
+  const featureInspector = document.getElementById('featureInspector');
+  const zoomInBtn = document.getElementById('zoomInBtn');
+  const zoomOutBtn = document.getElementById('zoomOutBtn');
+  const zoomResetBtn = document.getElementById('zoomResetBtn');
+  const zoomReadout = document.getElementById('zoomReadout');
+
+  const formatUSD = (value) => `$${value.toFixed(2)}`;
+  const formatIDR = (usdValue) => {
+    const idr = Math.round(usdValue * USD_TO_IDR);
+    return `≈ Rp ${idr.toLocaleString('id-ID')}`;
+  };
+
+  function getSelectedModules() {
+    return MODULES.filter((m) => state.selectedIds.has(m.id));
+  }
+
+  function getTotalUSD() {
+    return getSelectedModules().reduce((sum, m) => sum + m.price, 0);
+  }
+
+  // Theme Initialization (Executive Light default, saved preference respected)
+  const savedTheme = localStorage.getItem('terragis-enterprise-theme');
+  if (savedTheme === 'light' || savedTheme === 'dark') {
+    htmlEl.setAttribute('data-theme', savedTheme);
+  }
+
+  themeToggle.addEventListener('click', () => {
+    const nextTheme = htmlEl.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    htmlEl.setAttribute('data-theme', nextTheme);
+    localStorage.setItem('terragis-enterprise-theme', nextTheme);
+  });
+
+  // Render Pricing & Summary
+  function renderPricing() {
+    const selected = getSelectedModules();
+    const total = getTotalUSD();
+
+    moduleCards.forEach((card) => {
+      const id = card.dataset.id;
+      const isSelected = state.selectedIds.has(id);
+      card.classList.toggle('selected', isSelected);
+      const cb = card.querySelector('.module-checkbox');
+      if (cb) cb.checked = isSelected;
+
+      const idrLabel = card.querySelector('[data-idr-for]');
+      if (idrLabel) {
+        const usd = Number(idrLabel.dataset.idrFor);
+        idrLabel.textContent = state.showIdr ? formatIDR(usd) : '';
+      }
+    });
+
+    summaryItemsEl.innerHTML = '';
+    if (selected.length === 0) {
+      const emptyEl = document.createElement('div');
+      emptyEl.className = 'summary-empty';
+      emptyEl.textContent = 'Pilih minimal 1 komponen GIS atau klik "Pilih Semua Komponen ($115)".';
+      summaryItemsEl.appendChild(emptyEl);
+    } else {
+      selected.forEach((item) => {
+        const row = document.createElement('div');
+        row.className = 'summary-item-line';
+
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = item.name;
+
+        const priceSpan = document.createElement('span');
+        priceSpan.className = 'mono';
+        priceSpan.textContent = formatUSD(item.price);
+
+        row.appendChild(nameSpan);
+        row.appendChild(priceSpan);
+        summaryItemsEl.appendChild(row);
+      });
+    }
+
+    selectedCountEl.textContent = String(selected.length);
+    subtotalDisplayEl.textContent = `${formatUSD(total)} USD`;
+    totalDisplayEl.textContent = formatUSD(total);
+    totalIdrEstimateEl.textContent = state.showIdr && total > 0 ? formatIDR(total) : '';
+
+    checkoutBtnTextEl.textContent =
+      total > 0
+        ? `Lanjutkan Pembayaran — ${formatUSD(total)} USD`
+        : 'Pilih Komponen Terlebih Dahulu';
+    openCheckoutBtn.disabled = total === 0;
+  }
+
+  moduleCheckboxes.forEach((checkbox) => {
+    checkbox.addEventListener('change', (e) => {
+      const id = e.target.dataset.id;
+      if (e.target.checked) {
+        state.selectedIds.add(id);
+      } else {
+        state.selectedIds.delete(id);
+      }
+      renderPricing();
+    });
+  });
+
+  moduleCards.forEach((card) => {
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('label.checkbox-wrap')) return;
+      const id = card.dataset.id;
+      if (state.selectedIds.has(id)) {
+        state.selectedIds.delete(id);
+      } else {
+        state.selectedIds.add(id);
+      }
+      renderPricing();
+    });
+  });
+
+  selectAllBundleBtn.addEventListener('click', () => {
+    state.selectedIds = new Set(MODULES.map((m) => m.id));
+    renderPricing();
+  });
+
+  currencyBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      currencyBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.showIdr = btn.dataset.currency === 'BOTH';
+      renderPricing();
+    });
+  });
+
+  paymentBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      paymentBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.paymentMethod = btn.dataset.method;
+    });
+  });
+
+  // Server-Verified Google Auth Session Helpers
+  function getInitials(name) {
+    const parts = (name || '').trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return 'U';
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+
+  function renderUserAvatar(containerEl, user) {
+    containerEl.innerHTML = '';
+    if (user.picture) {
+      const img = document.createElement('img');
+      img.src = user.picture;
+      img.alt = user.name;
+      img.referrerPolicy = 'no-referrer';
+      img.className = 'user-avatar-img';
+      img.onerror = () => {
+        containerEl.textContent = getInitials(user.name);
+      };
+      containerEl.appendChild(img);
+    } else {
+      containerEl.textContent = getInitials(user.name);
+    }
+  }
+
+  async function fetchCurrentUser() {
+    try {
+      const res = await fetch('/api/auth/me', { credentials: 'same-origin' });
+      if (!res.ok) {
+        state.currentUser = null;
+      } else {
+        const data = await res.json();
+        state.currentUser = data.authenticated && data.user ? data.user : null;
+      }
+    } catch {
+      state.currentUser = null;
+    }
+    renderAuthUI();
+    return state.currentUser;
+  }
+
+  function renderAuthUI() {
+    const user = state.currentUser;
+    const isSignedIn = Boolean(user);
+
+    // 1. Navbar Corner
+    navLoginBtn.classList.toggle('hidden', isSignedIn);
+    navUserMenu.classList.toggle('hidden', !isSignedIn);
+
+    // 2. Payment Order Summary Corner
+    summaryUserBadge.classList.toggle('hidden', !isSignedIn);
+    summaryLoginLink.classList.toggle('hidden', isSignedIn);
+
+    // 3. Payment Modal Corner
+    modalUserBadge.classList.toggle('hidden', !isSignedIn);
+    modalLoginLink.classList.toggle('hidden', isSignedIn);
+    modalAuthPrompt.classList.toggle('hidden', isSignedIn);
+
+    if (isSignedIn) {
+      renderUserAvatar(navUserAvatar, user);
+      navUserName.textContent = user.name;
+      dropdownUserName.textContent = user.name;
+      dropdownUserEmail.textContent = user.email || '';
+      dropdownUserProvider.textContent = 'Akun Google Terverifikasi';
+
+      renderUserAvatar(summaryUserAvatar, user);
+      summaryUserName.textContent = user.name;
+      summaryUserBadge.title = `${user.name} (${user.email || ''})`;
+
+      renderUserAvatar(modalUserAvatar, user);
+      modalUserName.textContent = user.name;
+      modalUserEmail.textContent = user.email || '';
+    }
+  }
+
+  navUserTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = !navUserDropdown.classList.contains('hidden');
+    navUserDropdown.classList.toggle('hidden', isOpen);
+    navUserTrigger.setAttribute('aria-expanded', String(!isOpen));
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!navUserMenu.contains(e.target)) {
+      navUserDropdown.classList.add('hidden');
+      navUserTrigger.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  logoutBtn.addEventListener('click', async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
+    } catch {
+      // ignore
+    }
+    state.currentUser = null;
+    navUserDropdown.classList.add('hidden');
+    renderAuthUI();
+  });
+
+  // Checkout Modal Logic
+  function openModal() {
+    const total = getTotalUSD();
+    if (total === 0) return;
+
+    renderAuthUI();
+
+    const user = state.currentUser;
+    const nameInput = document.getElementById('buyerName');
+    const emailInput = document.getElementById('buyerEmail');
+    if (user) {
+      if (!nameInput.value.trim()) nameInput.value = user.name;
+      if (!emailInput.value.trim() && user.email) emailInput.value = user.email;
+    }
+
+    modalTotalAmount.textContent = `${formatUSD(total)} USD`;
+    modalSelectedMethod.textContent = state.paymentMethod;
+    confirmPayBtn.textContent = `Terbitkan Invoice (${formatUSD(total)} USD)`;
+    formError.textContent = '';
+
+    checkoutStepForm.classList.remove('hidden');
+    checkoutStepInvoice.classList.add('hidden');
+
+    checkoutModal.classList.add('open');
+    checkoutModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    checkoutModal.classList.remove('open');
+    checkoutModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  openCheckoutBtn.addEventListener('click', openModal);
+  closeModalBtn.addEventListener('click', closeModal);
+  cancelModalBtn.addEventListener('click', closeModal);
+
+  checkoutModal.addEventListener('click', (e) => {
+    if (e.target === checkoutModal) closeModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && checkoutModal.classList.contains('open')) {
+      closeModal();
+    }
+  });
+
+  checkoutForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('buyerName').value.trim();
+    const org = document.getElementById('buyerOrg').value.trim() || 'Lisensi Personal / Proyek';
+    const email = document.getElementById('buyerEmail').value.trim();
+    const phone = document.getElementById('buyerPhone').value.trim();
+    const notes = document.getElementById('buyerNotes').value.trim();
+
+    if (!name || !email || !phone) {
+      formError.textContent = 'Mohon lengkapi Nama Lengkap, Email Resmi, dan Nomor Telepon / WhatsApp.';
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      formError.textContent = 'Format alamat email tidak valid.';
+      return;
+    }
+
+    formError.textContent = '';
+
+    const selected = getSelectedModules();
+    const total = getTotalUSD();
+    const now = new Date();
+    const formattedDate = now.toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+    const randomCode = String(Math.floor(1000 + Math.random() * 9000));
+
+    document.getElementById('invNumber').textContent = `INV-TGIS-${now.getFullYear()}-${randomCode}`;
+    document.getElementById('invDate').textContent = formattedDate;
+    document.getElementById('invBuyerName').textContent = name;
+    document.getElementById('invBuyerOrg').textContent = org;
+    document.getElementById('invBuyerEmail').textContent = email;
+    document.getElementById('invMethod').textContent = state.paymentMethod;
+    document.getElementById('invPhone').textContent = phone;
+    document.getElementById('invNotes').textContent = notes ? `Catatan: ${notes}` : '';
+
+    const tbody = document.getElementById('invTableBody');
+    tbody.innerHTML = '';
+    selected.forEach((item) => {
+      const tr = document.createElement('tr');
+      const tdName = document.createElement('td');
+      tdName.textContent = item.name;
+      const tdPrice = document.createElement('td');
+      tdPrice.className = 'align-right mono';
+      tdPrice.textContent = formatUSD(item.price);
+      tr.appendChild(tdName);
+      tr.appendChild(tdPrice);
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('invGrandTotal').textContent = `${formatUSD(total)} USD`;
+    document.getElementById('invIdrRef').textContent = formatIDR(total);
+
+    checkoutStepForm.classList.add('hidden');
+    checkoutStepInvoice.classList.remove('hidden');
+  });
+
+  backToEditBtn.addEventListener('click', () => {
+    checkoutStepInvoice.classList.add('hidden');
+    checkoutStepForm.classList.remove('hidden');
+  });
+
+  printInvoiceBtn.addEventListener('click', () => {
+    window.print();
+  });
+
+  // Geospatial Map Controls
+  layerToggles.forEach((toggle) => {
+    toggle.addEventListener('change', (e) => {
+      const targetLayer = document.getElementById(e.target.dataset.layer);
+      if (targetLayer) {
+        targetLayer.classList.toggle('layer-hidden', !e.target.checked);
+      }
+    });
+  });
+
+  gisInteractiveSvg.addEventListener('mousemove', (e) => {
+    const rect = gisInteractiveSvg.getBoundingClientRect();
+    const rx = (e.clientX - rect.left) / rect.width;
+    const ry = (e.clientY - rect.top) / rect.height;
+
+    const lat = (-6.86 - ry * 0.14).toFixed(4);
+    const lng = (107.52 + rx * 0.24).toFixed(4);
+    liveCoords.textContent = `LAT: ${lat} | LNG: ${lng}`;
+  });
+
+  document.querySelectorAll('.interactive-feature').forEach((feature) => {
+    feature.addEventListener('click', () => {
+      const title = feature.dataset.title || 'Objek Spasial';
+      const type = feature.dataset.type || '-';
+      const area = feature.dataset.area || '-';
+      const coord = feature.dataset.coord || '-';
+
+      featureInspector.innerHTML = '';
+      const strong = document.createElement('strong');
+      strong.textContent = title;
+
+      const kv = document.createElement('div');
+      kv.className = 'inspector-kv';
+      kv.innerHTML = `
+        <div><span class="muted">Tipe</span><span class="mono">${type}</span></div>
+        <div><span class="muted">Metrik</span><span class="mono">${area}</span></div>
+        <div><span class="muted">Koordinat</span><span class="mono">${coord}</span></div>
+      `;
+
+      featureInspector.appendChild(strong);
+      featureInspector.appendChild(kv);
+    });
+  });
+
+  function applyZoom() {
+    const cx = 400;
+    const cy = 235;
+    const tx = cx - cx * state.zoom;
+    const ty = cy - cy * state.zoom;
+    mapViewport.setAttribute(
+      'transform',
+      `translate(${tx.toFixed(1)}, ${ty.toFixed(1)}) scale(${state.zoom.toFixed(2)})`
+    );
+    zoomReadout.textContent = `${Math.round(state.zoom * 100)}%`;
+  }
+
+  zoomInBtn.addEventListener('click', () => {
+    state.zoom = Math.min(2.0, +(state.zoom + 0.2).toFixed(2));
+    applyZoom();
+  });
+
+  zoomOutBtn.addEventListener('click', () => {
+    state.zoom = Math.max(0.8, +(state.zoom - 0.2).toFixed(2));
+    applyZoom();
+  });
+
+  zoomResetBtn.addEventListener('click', () => {
+    state.zoom = 1;
+    applyZoom();
+  });
+
+  renderPricing();
+  fetchCurrentUser().then(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('openCheckout') === '1') {
+      openModal();
+      window.history.replaceState({}, '', `${window.location.pathname}#pricing`);
+    }
+  });
+})();
