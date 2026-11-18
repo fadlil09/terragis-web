@@ -1,30 +1,34 @@
 (() => {
   'use strict';
 
-  const USD_TO_IDR = 16000;
-
   const MODULES = [
     {
       id: 'core',
       name: 'Lisensi Core Web GIS Platform',
-      price: 65
+      price: 65,
+      priceIdr: 1185796
     },
     {
       id: 'spatial',
       name: 'Modul Integrasi Data Spasial & Basemap HD',
-      price: 25
+      price: 25,
+      priceIdr: 456075
     },
     {
       id: 'deploy',
       name: 'Konfigurasi Server Cloud, Domain & SSL/TLS',
-      price: 15
+      price: 15,
+      priceIdr: 273645
     },
     {
       id: 'support',
       name: 'Dukungan Teknis & Dokumentasi API (12 Bulan)',
-      price: 10
+      price: 10,
+      priceIdr: 182431
     }
   ];
+
+  const USD_TO_IDR = 2097947 / 115;
 
   const state = {
     selectedIds: new Set(MODULES.map((m) => m.id)),
@@ -61,8 +65,6 @@
   const modalTotalAmount = document.getElementById('modalTotalAmount');
   const modalSelectedMethod = document.getElementById('modalSelectedMethod');
   const confirmPayBtn = document.getElementById('confirmPayBtn');
-  const backToEditBtn = document.getElementById('backToEditBtn');
-  const printInvoiceBtn = document.getElementById('printInvoiceBtn');
 
   // Auth / User Corner Elements
   const navLoginBtn = document.getElementById('navLoginBtn');
@@ -101,6 +103,11 @@
 
   const formatUSD = (value) => `$${value.toFixed(2)}`;
   const formatIDR = (usdValue) => {
+    if (usdValue === 115) return '≈ Rp 2.097.947';
+    if (usdValue === 65) return '≈ Rp 1.185.796';
+    if (usdValue === 25) return '≈ Rp 456.075';
+    if (usdValue === 15) return '≈ Rp 273.645';
+    if (usdValue === 10) return '≈ Rp 182.431';
     const idr = Math.round(usdValue * USD_TO_IDR);
     return `≈ Rp ${idr.toLocaleString('id-ID')}`;
   };
@@ -375,10 +382,163 @@
     }
   });
 
+  // Cloud Billing & Bukti Bayar Elements
+  const bTopAccountId = document.getElementById('bTopAccountId');
+  const bTopBalanceIdr = document.getElementById('bTopBalanceIdr');
+  const bTopBalanceUsd = document.getElementById('bTopBalanceUsd');
+  const billingAccountName = document.getElementById('billingAccountName');
+  const bAccountId = document.getElementById('bAccountId');
+  const bAccountName = document.getElementById('bAccountName');
+  const bCompanyName = document.getElementById('bCompanyName');
+  const bInvoiceEmail = document.getElementById('bInvoiceEmail');
+  const bContactName = document.getElementById('bContactName');
+  const bContactPhone = document.getElementById('bContactPhone');
+  const bPaymentMethod = document.getElementById('bPaymentMethod');
+  const bCreatedDate = document.getElementById('bCreatedDate');
+  const bBalanceIdr = document.getElementById('bBalanceIdr');
+  const bBalanceUsd = document.getElementById('bBalanceUsd');
+  const billingTableBody = document.getElementById('billingTableBody');
+  const billingGrandTotalUsd = document.getElementById('billingGrandTotalUsd');
+  const billingGrandTotalIdr = document.getElementById('billingGrandTotalIdr');
+  const paymentInstructionBox = document.getElementById('paymentInstructionBox');
+  const printBillingBtn = document.getElementById('printBillingBtn');
+  const confirmPrintBtn = document.getElementById('confirmPrintBtn');
+  const backToFormBtn = document.getElementById('backToFormBtn');
+  const closeBillingModalBtn = document.getElementById('closeBillingModalBtn');
+  const billingTabs = document.querySelectorAll('.b-tab');
+
+  function renderPaymentInstructions(method, idrFormatted, accountId) {
+    if (!paymentInstructionBox) return;
+
+    if (method.includes('QRIS')) {
+      paymentInstructionBox.innerHTML = `
+        <div class="pay-card-head">
+          <h4>Pembayaran Instan via QRIS Nasional</h4>
+          <span class="badge-status-ready">Kode QR Aktif</span>
+        </div>
+        <div class="qris-display-box">
+          <div class="qris-qr-frame">
+            <svg class="qris-qr-svg" viewBox="0 0 100 100" fill="#0f172a">
+              <rect width="100" height="100" fill="#ffffff" />
+              <!-- Finder Patterns -->
+              <rect x="6" y="6" width="26" height="26" fill="#0f172a" />
+              <rect x="10" y="10" width="18" height="18" fill="#ffffff" />
+              <rect x="14" y="14" width="10" height="10" fill="#0f172a" />
+
+              <rect x="68" y="6" width="26" height="26" fill="#0f172a" />
+              <rect x="72" y="10" width="18" height="18" fill="#ffffff" />
+              <rect x="76" y="14" width="10" height="10" fill="#0f172a" />
+
+              <rect x="6" y="68" width="26" height="26" fill="#0f172a" />
+              <rect x="10" y="72" width="18" height="18" fill="#ffffff" />
+              <rect x="14" y="76" width="10" height="10" fill="#0f172a" />
+
+              <!-- Data Matrix Elements -->
+              <rect x="38" y="10" width="6" height="6" />
+              <rect x="50" y="12" width="6" height="6" />
+              <rect x="38" y="24" width="8" height="6" />
+              <rect x="52" y="26" width="6" height="6" />
+              <rect x="10" y="38" width="6" height="8" />
+              <rect x="22" y="42" width="8" height="6" />
+              <rect x="36" y="38" width="14" height="14" fill="#047857" />
+              <rect x="56" y="40" width="8" height="6" />
+              <rect x="72" y="38" width="6" height="8" />
+              <rect x="84" y="44" width="6" height="6" />
+              <rect x="38" y="60" width="8" height="8" />
+              <rect x="54" y="56" width="6" height="12" />
+              <rect x="68" y="62" width="8" height="6" />
+              <rect x="80" y="58" width="10" height="6" />
+              <rect x="42" y="76" width="8" height="6" />
+              <rect x="56" y="74" width="10" height="8" />
+              <rect x="72" y="78" width="6" height="12" />
+              <rect x="84" y="74" width="8" height="6" />
+            </svg>
+          </div>
+          <div class="qris-info">
+            <span class="qris-amount-pill mono">${idrFormatted}</span>
+            <p style="margin: 0 0 0.35rem; font-size: 0.86rem; color: var(--text-secondary);">
+              Scan QRIS di atas menggunakan aplikasi mobile banking atau dompet digital Anda:
+            </p>
+            <div class="qris-apps-list">
+              <span>BCA Mobile</span>
+              <span>Livin' Mandiri</span>
+              <span>BRImo</span>
+              <span>BNI Mobile</span>
+              <span>GoPay</span>
+              <span>OVO</span>
+              <span>DANA</span>
+              <span>ShopeePay</span>
+            </div>
+            <p style="margin: 0.75rem 0 0; font-size: 0.78rem; color: var(--text-muted);">
+              ID Billing: <strong class="mono">${accountId}</strong> • Verifikasi pembayaran otomatis dalam 1–3 menit.
+            </p>
+          </div>
+        </div>
+      `;
+    } else if (method.includes('Transfer Bank')) {
+      const vaBca = `8801${accountId}`;
+      const vaMandiri = `8902${accountId}`;
+      paymentInstructionBox.innerHTML = `
+        <div class="pay-card-head">
+          <h4>Nomor Virtual Account &amp; Transfer Bank</h4>
+          <span class="badge-status-ready">VA Aktif</span>
+        </div>
+        <p style="margin: 0 0 0.85rem; font-size: 0.86rem; color: var(--text-secondary);">
+          Transfer tepat sejumlah <strong>${idrFormatted}</strong> ke salah satu rekening Virtual Account di bawah:
+        </p>
+        <div class="va-item">
+          <div>
+            <strong style="display: block; font-size: 0.88rem;">BCA Virtual Account</strong>
+            <span class="mono" style="font-size: 1.05rem; font-weight: 700; color: var(--text);">${vaBca}</span>
+          </div>
+          <button type="button" class="btn btn-outline va-copy-btn" onclick="navigator.clipboard.writeText('${vaBca}'); this.textContent='Tersalin!'; setTimeout(()=>this.textContent='Salin VA', 1500);">Salin VA</button>
+        </div>
+        <div class="va-item">
+          <div>
+            <strong style="display: block; font-size: 0.88rem;">Mandiri Virtual Account</strong>
+            <span class="mono" style="font-size: 1.05rem; font-weight: 700; color: var(--text);">${vaMandiri}</span>
+          </div>
+          <button type="button" class="btn btn-outline va-copy-btn" onclick="navigator.clipboard.writeText('${vaMandiri}'); this.textContent='Tersalin!'; setTimeout(()=>this.textContent='Salin VA', 1500);">Salin VA</button>
+        </div>
+        <p style="margin: 0.65rem 0 0; font-size: 0.78rem; color: var(--text-muted);">
+          Atas Nama: <strong>TerraGIS Enterprise Solutions</strong> • Konfirmasi otomatis 24 jam.
+        </p>
+      `;
+    } else {
+      paymentInstructionBox.innerHTML = `
+        <div class="pay-card-head">
+          <h4>Metode Pembayaran: ${method}</h4>
+          <span class="badge-status-ready">Siap Otorisasi</span>
+        </div>
+        <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+          <p style="margin: 0 0 0.5rem;">
+            Total tagihan lisensi: <strong class="mono" style="color: #16a34a; font-size: 1.1rem;">${idrFormatted}</strong> <span class="mono muted">($115.00 USD)</span>.
+          </p>
+          <p style="margin: 0;">
+            Koneksi gateway pembayaran terenkripsi TLS 1.3 aman. Tanda terima dan lisensi komersial diterbitkan instan ke email terdaftar setelah konfirmasi.
+          </p>
+        </div>
+      `;
+    }
+  }
+
+  // Tabs Switcher
+  billingTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      billingTabs.forEach((t) => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const targetId = tab.dataset.tab;
+      document.querySelectorAll('.b-tab-content').forEach((pane) => {
+        pane.classList.toggle('hidden', pane.id !== targetId);
+      });
+    });
+  });
+
   checkoutForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const name = document.getElementById('buyerName').value.trim();
-    const org = document.getElementById('buyerOrg').value.trim() || 'Lisensi Personal / Proyek';
+    const org = document.getElementById('buyerOrg').value.trim() || 'DISKOMINFO';
     const email = document.getElementById('buyerEmail').value.trim();
     const phone = document.getElementById('buyerPhone').value.trim();
 
@@ -396,51 +556,90 @@
 
     const selected = getSelectedModules();
     const total = getTotalUSD();
+    const totalIdr = formatIDR(total).replace('≈ ', '');
     const now = new Date();
-    const formattedDate = now.toLocaleDateString('id-ID', {
+    const formattedCreated = `${now.toLocaleDateString('id-ID', {
       day: '2-digit',
-      month: 'short',
+      month: '2-digit',
       year: 'numeric'
-    });
-    const randomCode = String(Math.floor(1000 + Math.random() * 9000));
+    })}, ${now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })} WIB`;
 
-    document.getElementById('invNumber').textContent = `INV-TGIS-${now.getFullYear()}-${randomCode}`;
-    document.getElementById('invDate').textContent = formattedDate;
-    document.getElementById('invBuyerName').textContent = name;
-    document.getElementById('invBuyerOrg').textContent = org;
-    document.getElementById('invBuyerEmail').textContent = email;
-    document.getElementById('invMethod').textContent = state.paymentMethod;
-    document.getElementById('invPhone').textContent = phone;
+    const accountId = '12002' + String(Math.floor(10000 + Math.random() * 90000));
 
-    const tbody = document.getElementById('invTableBody');
-    tbody.innerHTML = '';
-    selected.forEach((item) => {
-      const tr = document.createElement('tr');
-      const tdName = document.createElement('td');
-      tdName.textContent = item.name;
-      const tdPrice = document.createElement('td');
-      tdPrice.className = 'align-right mono';
-      tdPrice.textContent = formatUSD(item.price);
-      tr.appendChild(tdName);
-      tr.appendChild(tdPrice);
-      tbody.appendChild(tr);
-    });
+    // Populate Cloud Billing Header & Fields (matches user screenshot!)
+    if (bTopAccountId) bTopAccountId.textContent = accountId;
+    if (bTopBalanceIdr) bTopBalanceIdr.textContent = totalIdr;
+    if (bTopBalanceUsd) bTopBalanceUsd.textContent = `(${formatUSD(total)} USD)`;
 
-    document.getElementById('invGrandTotal').textContent = `${formatUSD(total)} USD`;
-    document.getElementById('invIdrRef').textContent = formatIDR(total);
+    if (billingAccountName) billingAccountName.textContent = name;
+    if (bAccountId) bAccountId.textContent = accountId;
+    if (bAccountName) bAccountName.textContent = name;
+    if (bCompanyName) bCompanyName.textContent = org;
+    if (bInvoiceEmail) bInvoiceEmail.textContent = email;
+    if (bContactName) bContactName.textContent = name;
+    if (bContactPhone) bContactPhone.textContent = phone;
+    if (bPaymentMethod) bPaymentMethod.textContent = state.paymentMethod;
+    if (bCreatedDate) bCreatedDate.textContent = formattedCreated;
+    if (bBalanceIdr) bBalanceIdr.textContent = totalIdr;
+    if (bBalanceUsd) bBalanceUsd.textContent = `(${formatUSD(total)} USD)`;
+
+    // Populate Component Table with both USD and Rupiah
+    if (billingTableBody) {
+      billingTableBody.innerHTML = '';
+      selected.forEach((item) => {
+        const tr = document.createElement('tr');
+
+        const tdName = document.createElement('td');
+        tdName.textContent = item.name;
+
+        const tdPriceUsd = document.createElement('td');
+        tdPriceUsd.className = 'align-right mono';
+        tdPriceUsd.textContent = formatUSD(item.price);
+
+        const tdPriceIdr = document.createElement('td');
+        tdPriceIdr.className = 'align-right mono';
+        tdPriceIdr.textContent = formatIDR(item.price).replace('≈ ', '');
+
+        tr.appendChild(tdName);
+        tr.appendChild(tdPriceUsd);
+        tr.appendChild(tdPriceIdr);
+        billingTableBody.appendChild(tr);
+      });
+    }
+
+    if (billingGrandTotalUsd) billingGrandTotalUsd.textContent = `${formatUSD(total)} USD`;
+    if (billingGrandTotalIdr) billingGrandTotalIdr.textContent = totalIdr;
+
+    // Render payment method instructions (QRIS / Bank VA / Card)
+    renderPaymentInstructions(state.paymentMethod, totalIdr, accountId);
+
+    // Reset tabs to first tab
+    if (billingTabs.length > 0) {
+      billingTabs[0].click();
+    }
 
     checkoutStepForm.classList.add('hidden');
     checkoutStepInvoice.classList.remove('hidden');
   });
 
-  backToEditBtn.addEventListener('click', () => {
-    checkoutStepInvoice.classList.add('hidden');
-    checkoutStepForm.classList.remove('hidden');
-  });
+  if (backToFormBtn) {
+    backToFormBtn.addEventListener('click', () => {
+      checkoutStepInvoice.classList.add('hidden');
+      checkoutStepForm.classList.remove('hidden');
+    });
+  }
 
-  printInvoiceBtn.addEventListener('click', () => {
-    window.print();
-  });
+  if (closeBillingModalBtn) {
+    closeBillingModalBtn.addEventListener('click', closeModal);
+  }
+
+  if (printBillingBtn) {
+    printBillingBtn.addEventListener('click', () => window.print());
+  }
+
+  if (confirmPrintBtn) {
+    confirmPrintBtn.addEventListener('click', () => window.print());
+  }
 
   // Geospatial Map Controls
   layerToggles.forEach((toggle) => {

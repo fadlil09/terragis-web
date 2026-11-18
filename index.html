@@ -911,63 +911,195 @@
         </form>
       </div>
 
-      <!-- Step 2: Official Digital Invoice -->
+      <!-- Step 2: Cloud Billing Account & Bukti Bayar Dashboard -->
       <div id="checkoutStepInvoice" class="hidden">
-        <div class="invoice-doc" id="printableInvoice">
-          <div class="invoice-head">
-            <div>
-              <span class="invoice-badge">INVOICE RESMI</span>
-              <h3>Pembelian Sistem Web GIS</h3>
-              <p class="mono muted" id="invNumber">INV-TGIS-2026-0115</p>
+        <div class="billing-doc" id="printableInvoice">
+          <!-- Top Cloud Bar -->
+          <div class="billing-topbar">
+            <div class="billing-breadcrumb">
+              <span class="mono muted">g/account/</span><span class="mono muted" id="bTopAccountId">1200287697</span>
             </div>
-            <div class="invoice-issuer">
-              <strong>TerraGIS Solutions</strong>
-              <span class="muted" id="invDate">18 Nov 2026</span>
-            </div>
-          </div>
-
-          <div class="invoice-meta-grid">
-            <div>
-              <small>DITAGIHKAN KEPADA</small>
-              <strong id="invBuyerName">-</strong>
-              <span id="invBuyerOrg">-</span>
-              <span id="invBuyerEmail">-</span>
-            </div>
-            <div>
-              <small>INFORMASI PEMBAYARAN</small>
-              <strong id="invMethod">-</strong>
-              <span id="invPhone">-</span>
+            <div class="billing-topbar-right">
+              <span class="billing-topbar-balance">
+                <span class="pulse-dot-green"></span>
+                <span>Total Tagihan:</span>
+                <strong class="mono" id="bTopBalanceIdr">Rp 2.097.947</strong>
+                <span class="mono muted" id="bTopBalanceUsd">($115.00 USD)</span>
+              </span>
+              <span class="badge-idr">IDR</span>
             </div>
           </div>
 
-          <table class="invoice-table">
-            <thead>
-              <tr>
-                <th>Deskripsi Komponen</th>
-                <th class="align-right">Jumlah (USD)</th>
-              </tr>
-            </thead>
-            <tbody id="invTableBody"></tbody>
-            <tfoot>
-              <tr>
-                <td>Biaya Layanan &amp; Administrasi</td>
-                <td class="align-right mono">$0.00</td>
-              </tr>
-              <tr class="invoice-total-row">
-                <td><strong>TOTAL PEMBAYARAN</strong></td>
-                <td class="align-right mono"><strong id="invGrandTotal">$115.00 USD</strong></td>
-              </tr>
-            </tfoot>
-          </table>
+          <!-- Header & Action Links -->
+          <div class="billing-header-row">
+            <div class="billing-title-area">
+              <div class="billing-name-row">
+                <h2 id="billingAccountName">M Bahrudin</h2>
+                <span class="verified-check" title="Terverifikasi">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="#0284c7">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  </svg>
+                </span>
+                <span class="badge-default-acc">Default</span>
+              </div>
+            </div>
+            <div class="billing-action-links no-print">
+              <button type="button" class="billing-link-btn" id="printBillingBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                  <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                <span>Cetak Bukti Bayar</span>
+              </button>
+              <button type="button" class="billing-link-btn" id="backToFormBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                <span>Ubah Data</span>
+              </button>
+            </div>
+          </div>
 
-          <p class="invoice-note">
-            Referensi konversi estimasi: <span class="mono" id="invIdrRef"></span>. Paket source code, kredensial lisensi, dan jadwal deployment dikirimkan ke email penerima setelah verifikasi pembayaran selesai.
-          </p>
+          <!-- Two-Column Billing Account Overview Grid -->
+          <div class="billing-overview-card">
+            <div class="billing-col-left">
+              <div class="billing-data-row">
+                <span class="billing-label">Account ID:</span>
+                <span class="billing-val mono" id="bAccountId">1200287697</span>
+              </div>
+              <div class="billing-data-row">
+                <span class="billing-label">Account name:</span>
+                <span class="billing-val" id="bAccountName">M Bahrudin</span>
+              </div>
+              <div class="billing-data-row">
+                <span class="billing-label">Type:</span>
+                <span class="billing-val type-billing">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                    <line x1="2" y1="10" x2="22" y2="10"></line>
+                  </svg>
+                  <span>Billing account (Lisensi Web GIS)</span>
+                </span>
+              </div>
+              <div class="billing-data-row">
+                <span class="billing-label">Company name:</span>
+                <span class="billing-val" id="bCompanyName">DISKOMINFO</span>
+              </div>
+              <div class="billing-data-row">
+                <span class="billing-label">Registration number:</span>
+                <span class="billing-val mono">-</span>
+              </div>
+              <div class="billing-data-row">
+                <span class="billing-label">VAT number:</span>
+                <span class="billing-val mono">-</span>
+              </div>
+              <div class="billing-data-row">
+                <span class="billing-label">Invoice email:</span>
+                <span class="billing-val email-val" id="bInvoiceEmail">muhammadbahrudin1409@gmail.com</span>
+              </div>
+              <div class="billing-data-row">
+                <span class="billing-label">Contact person's name:</span>
+                <span class="billing-val" id="bContactName">M Bahrudin</span>
+              </div>
+              <div class="billing-data-row">
+                <span class="billing-label">Contact person's phone:</span>
+                <span class="billing-val mono" id="bContactPhone">082113882147</span>
+              </div>
+            </div>
+
+            <div class="billing-col-right">
+              <div class="billing-data-row">
+                <span class="billing-label">Country:</span>
+                <span class="billing-val country-val">
+                  <span class="flag-icon" aria-hidden="true">🇮🇩</span>
+                  <span>Indonesia</span>
+                </span>
+              </div>
+              <div class="billing-data-row">
+                <span class="billing-label">County / State:</span>
+                <span class="billing-val" id="bProvince">Sumatera Selatan</span>
+              </div>
+              <div class="billing-data-row">
+                <span class="billing-label">City:</span>
+                <span class="billing-val" id="bCity">Palembang</span>
+              </div>
+              <div class="billing-data-row">
+                <span class="billing-label">Metode Pembayaran:</span>
+                <span class="billing-val" id="bPaymentMethod">QRIS / E-Wallet (Konversi USD)</span>
+              </div>
+              <div class="billing-data-row">
+                <span class="billing-label">Zip/postal code:</span>
+                <span class="billing-val mono" id="bPostalCode">30139</span>
+              </div>
+              <div class="billing-data-row">
+                <span class="billing-label">Created:</span>
+                <span class="billing-val mono" id="bCreatedDate">19/11/2026, 01.10.00 WIB</span>
+              </div>
+              <div class="billing-data-row balance-highlight-row">
+                <span class="billing-label">Ongoing balance:</span>
+                <span class="billing-val balance-text">
+                  <strong class="mono" id="bBalanceIdr">Rp 2.097.947</strong>
+                  <small class="mono muted" id="bBalanceUsd">($115.00 USD)</small>
+                </span>
+              </div>
+              <div class="billing-data-row">
+                <span class="billing-label">Status Bukti Bayar:</span>
+                <span class="billing-val">
+                  <span class="badge-status-ready">Terverifikasi / Siap Bayar</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Tabs -->
+          <div class="billing-tabs-strip no-print">
+            <button type="button" class="b-tab active" data-tab="tab-items">Rincian Komponen ($115 USD / IDR)</button>
+            <button type="button" class="b-tab" data-tab="tab-pay">Instruksi Pembayaran Rupiah</button>
+          </div>
+
+          <!-- Tab 1: Itemized Component Table (USD + IDR) -->
+          <div class="b-tab-content" id="tab-items">
+            <table class="billing-table">
+              <thead>
+                <tr>
+                  <th>Deskripsi Komponen Web GIS</th>
+                  <th class="align-right">Harga (USD)</th>
+                  <th class="align-right">Harga (Rupiah)</th>
+                </tr>
+              </thead>
+              <tbody id="billingTableBody"></tbody>
+              <tfoot>
+                <tr>
+                  <td>Biaya Layanan &amp; Pajak Platform</td>
+                  <td class="align-right mono">$0.00</td>
+                  <td class="align-right mono">Rp 0 (Termasuk)</td>
+                </tr>
+                <tr class="billing-total-row">
+                  <td><strong>TOTAL PEMBAYARAN LISENSI</strong></td>
+                  <td class="align-right mono"><strong id="billingGrandTotalUsd">$115.00 USD</strong></td>
+                  <td class="align-right mono"><strong class="highlight-green" id="billingGrandTotalIdr">Rp 2.097.947</strong></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <!-- Tab 2: Payment Gateway Details & Transfer Info -->
+          <div class="b-tab-content hidden" id="tab-pay">
+            <div class="payment-instruction-card" id="paymentInstructionBox">
+              <!-- Populated dynamically based on selected payment method -->
+            </div>
+          </div>
+
+          <div class="billing-footer-note">
+            <span>Konversi Nilai Tagihan: <strong>Total $115.00 USD = Rp 2.097.947</strong> • Dokumen bukti tagihan sah dan terikat pada akun Google yang masuk. Paket instalasi dan kredensial dikirim langsung ke email pemesan setelah transaksi selesai.</span>
+          </div>
         </div>
 
         <div class="modal-footer no-print">
-          <button type="button" class="btn btn-outline" id="backToEditBtn">Ubah Data</button>
-          <button type="button" class="btn btn-primary" id="printInvoiceBtn">Cetak / Simpan PDF</button>
+          <button type="button" class="btn btn-outline" id="closeBillingModalBtn">Selesai / Tutup</button>
+          <button type="button" class="btn btn-primary" id="confirmPrintBtn">Cetak Bukti Bayar (PDF)</button>
         </div>
       </div>
     </div>
