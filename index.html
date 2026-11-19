@@ -87,6 +87,15 @@
           </div>
         </div>
 
+        <!-- Admin Shortcut Button -->
+        <button type="button" class="btn btn-outline btn-sm nav-admin-btn" id="navAdminBtn" title="Portal Otorisasi Admin Keuangan">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <span>Admin Keuangan 🔒</span>
+        </button>
+
         <a href="#pricing" class="btn btn-primary btn-sm">
           <span>Pesan Lisensi</span>
           <span class="btn-price-tag mono">$115</span>
@@ -1077,6 +1086,13 @@
             <button type="button" class="b-tab active" data-tab="tab-items">Rincian Komponen ($115 USD / IDR)</button>
             <button type="button" class="b-tab" data-tab="tab-pay" id="tabPayBtn">Instruksi Pembayaran Rupiah</button>
             <button type="button" class="b-tab" data-tab="tab-receipt" id="tabReceiptBtn">Kuitansi Pelunasan Sah</button>
+            <button type="button" class="b-tab b-tab-admin" data-tab="tab-admin" id="tabAdminBtn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span>Verifikasi Admin Keuangan 🔒</span>
+            </button>
           </div>
 
           <!-- Tab 1: Itemized Component Table (USD + IDR) -->
@@ -1110,11 +1126,46 @@
             <div class="payment-instruction-card" id="paymentInstructionBox">
               <!-- Populated dynamically based on selected payment method -->
             </div>
+            <!-- Buyer Submit Transfer Proof Box -->
+            <div class="buyer-submit-proof-card" id="buyerSubmitProofCard">
+              <div class="proof-card-head">
+                <span class="proof-step-badge">Langkah Pembeli</span>
+                <h5>Konfirmasi Transfer &amp; Ajukan Verifikasi ke Admin</h5>
+                <p>Setelah melakukan pembayaran sejumlah <strong class="highlight-green mono" id="proofAmountDisplay">Rp 2.097.947</strong>, kirim konfirmasi di bawah ini agar Admin Keuangan dapat memverifikasi dana dan menerbitkan lisensi sah.</p>
+              </div>
+              <div class="proof-form-inline">
+                <div class="proof-field">
+                  <label for="proofSenderInput">Nama Pengirim / Rekening Asal *</label>
+                  <input type="text" id="proofSenderInput" placeholder="Contoh: M Bahrudin - Bank BCA" />
+                </div>
+                <div class="proof-field">
+                  <label for="proofRefInput">Nomor Referensi Transaksi (Opsional)</label>
+                  <input type="text" id="proofRefInput" placeholder="Contoh: REF-2026-98124" />
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary btn-block" id="buyerSubmitProofBtn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+                <span>Saya Sudah Transfer — Ajukan Verifikasi ke Admin Keuangan</span>
+              </button>
+              <div class="proof-submitted-notice hidden" id="proofSubmittedNotice">
+                <span class="pulse-dot-amber"></span>
+                <div>
+                  <strong>Konfirmasi Berhasil Diajukan ke Antrean Admin</strong>
+                  <p>Data pembayaran Anda telah masuk ke antrean Admin Finansial TerraGIS. Status saat ini: <em>Menunggu Persetujuan Admin</em>. Begitu disetujui, lisensi aktif dan kuitansi sah berkop resmi akan otomatis diterbitkan.</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Tab 3: Official Paid Receipt & License Card -->
           <div class="b-tab-content hidden" id="tab-receipt">
-            <div class="official-receipt-sheet">
+            <div class="official-receipt-sheet" id="receiptSheet">
+              <!-- Watermark Pending Admin -->
+              <div class="receipt-watermark-pending" id="rWatermark">MENUNGGU VERIFIKASI ADMIN</div>
+
               <div class="receipt-header-row">
                 <div>
                   <span class="receipt-kicker mono">TANDA TERIMA PEMBAYARAN SAH</span>
@@ -1122,9 +1173,9 @@
                   <p class="mono muted" id="rKuitansiNo">KWT-TGIS-2026-7398</p>
                 </div>
                 <div class="receipt-stamp-wrap">
-                  <div class="official-circle-stamp">
+                  <div class="official-circle-stamp" id="rCircleStamp">
                     <span class="stamp-org">TERRAGIS SOLUTIONS</span>
-                    <span class="stamp-paid">LUNAS</span>
+                    <span class="stamp-paid" id="rStampPaidText">MENUNGGU VERIFIKASI</span>
                     <span class="stamp-date" id="rStampDate">19/11/2026</span>
                   </div>
                 </div>
@@ -1141,7 +1192,7 @@
                   <small>WAKTU &amp; METODE PELUNASAN</small>
                   <strong id="rPaidMethod">-</strong>
                   <span id="rPaidTimestamp" class="mono">-</span>
-                  <span class="badge-status-paid">Status: Telah Diterima Penuh</span>
+                  <span class="badge-status-pending" id="rPaidStatusBadge">Status: Menunggu Otorisasi Admin Keuangan</span>
                 </div>
               </div>
 
@@ -1151,7 +1202,7 @@
                 <span class="receipt-amount-words">Terbilang: Dua Juta Sembilan Puluh Tujuh Ribu Sembilan Ratus Empat Puluh Tujuh Rupiah (Setara $115.00 USD)</span>
               </div>
 
-              <div class="license-key-box">
+              <div class="license-key-box" id="licenseKeyContainer">
                 <div class="license-key-head">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -1159,8 +1210,118 @@
                   </svg>
                   <strong>KREDENSIAL LISENSI KOMERSIAL AKTIF</strong>
                 </div>
-                <div class="license-key-display mono" id="rLicenseKey">TGIS-PRO-2026-98F12-88E4</div>
-                <p>Lisensi ini memberikan hak penggunaan komersial penuh atas platform Web GIS TerraGIS Enterprise untuk akun pemesan di atas.</p>
+                <div class="license-key-display mono" id="rLicenseKey">TERKUNCI — Menunggu Otorisasi Admin Keuangan</div>
+                <p id="rLicenseNote">Lisensi komersial ini akan aktif dan terverifikasi secara resmi setelah disetujui oleh Admin Finansial TerraGIS.</p>
+              </div>
+
+              <div class="receipt-verifier-footnote">
+                <span class="mono muted" id="rVerifierFootnote">Otorisasi Resmi: Menunggu konfirmasi petugas Admin Finansial TerraGIS (ID: ADM-FIN-01).</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 4: Admin Verification & Approval Portal -->
+          <div class="b-tab-content hidden" id="tab-admin">
+            <div class="admin-auth-card">
+              <!-- Sub-state 1: Admin Login Required -->
+              <div id="adminLoginForm">
+                <div class="admin-auth-head">
+                  <span class="admin-badge-pill">PORTAL OTORISASI KEUANGAN</span>
+                  <h4>Verifikasi &amp; Persetujuan Pembayaran Lisensi</h4>
+                  <p>Halaman ini dikhususkan bagi <strong>Admin Finansial / Billing Officer</strong> untuk memverifikasi dana masuk dan mengesahkan penerbitan lisensi resmi.</p>
+                </div>
+
+                <div class="admin-login-box">
+                  <div class="admin-avatar-row">
+                    <div class="admin-avatar-icon">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <strong>Otorisasi Petugas Admin Finansial</strong>
+                      <small>ID: ADM-FIN-01 • Divisi Akuntansi &amp; Lisensi Komersial</small>
+                    </div>
+                  </div>
+
+                  <div class="form-field">
+                    <label for="adminPinInput">PIN / Sandi Otorisasi Admin Keuangan *</label>
+                    <input type="password" id="adminPinInput" class="admin-input-pin" placeholder="Masukkan PIN (Default: 1234 atau admin2026)" />
+                  </div>
+
+                  <p class="admin-error-text" id="adminAuthError"></p>
+
+                  <div class="admin-btn-row">
+                    <button type="button" class="btn btn-primary" id="adminLoginBtn">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                      </svg>
+                      <span>Masuk ke Panel Otorisasi</span>
+                    </button>
+                    <button type="button" class="btn btn-outline btn-sm" id="adminQuickDemoBtn">
+                      <span>Gunakan Akun Admin Demo (PIN: 1234)</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sub-state 2: Admin Control Panel (Unlocked) -->
+              <div id="adminApprovalPanel" class="hidden">
+                <div class="admin-verified-header">
+                  <div class="admin-verified-chip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Petugas Terverifikasi: Finansial Administrator (ADM-FIN-01)</span>
+                  </div>
+                  <button type="button" class="btn-text-sm" id="adminLogoutBtn">Keluar Mode Admin</button>
+                </div>
+
+                <div class="admin-review-grid">
+                  <div class="admin-review-item">
+                    <small>ID TRANSAKSI / BILLING</small>
+                    <strong class="mono" id="adminReviewAccId">-</strong>
+                  </div>
+                  <div class="admin-review-item">
+                    <small>PEMESAN / INSTANSI</small>
+                    <strong id="adminReviewName">-</strong>
+                    <span id="adminReviewOrg" class="muted">-</span>
+                  </div>
+                  <div class="admin-review-item">
+                    <small>NOMINAL DITERIMA</small>
+                    <strong class="mono highlight-green" id="adminReviewAmount">Rp 2.097.947</strong>
+                    <span class="mono muted">($115.00 USD)</span>
+                  </div>
+                  <div class="admin-review-item">
+                    <small>STATUS DOKUMEN</small>
+                    <span class="badge-status-pending" id="adminReviewStatus">Menunggu Otorisasi Admin</span>
+                  </div>
+                </div>
+
+                <div class="admin-action-box">
+                  <div class="admin-note-field">
+                    <label for="adminNoteInput">Catatan Pembukuan / Otorisasi Admin:</label>
+                    <input type="text" id="adminNoteInput" value="Dana Rp 2.097.947 telah masuk rekening giro instansi secara valid via QRIS/VA." />
+                  </div>
+
+                  <div class="admin-decision-actions">
+                    <button type="button" class="btn btn-success-enterprise btn-lg" id="adminApproveBtn">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                      </svg>
+                      <span>Setujui Pembayaran &amp; Sahkan Lisensi (Admin)</span>
+                    </button>
+                    <button type="button" class="btn btn-outline btn-lg" id="adminRejectBtn">
+                      <span>Tolak / Minta Revisi Bukti</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="admin-audit-log" id="adminAuditLog">
+                  <small class="mono">AUDIT TRAIL LOG: Sistem siap menerima otorisasi resmi dari petugas admin.</small>
+                </div>
               </div>
             </div>
           </div>
@@ -1172,18 +1333,25 @@
 
         <div class="modal-footer no-print">
           <button type="button" class="btn btn-outline" id="closeBillingModalBtn">Tutup</button>
-          <button type="button" class="btn btn-primary" id="confirmPaymentSuccessBtn">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-            <span>Konfirmasi Pembayaran Berhasil</span>
-          </button>
+          <div class="admin-footer-gate" id="adminFooterGate">
+            <span class="footer-admin-status" id="footerAdminStatus">
+              <span class="pulse-dot-amber" id="footerAdminDot"></span>
+              <span id="footerAdminStatusText">Status: Menunggu Otorisasi Admin Keuangan</span>
+            </span>
+            <button type="button" class="btn btn-primary btn-sm" id="triggerAdminModalBtn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span>Buka Verifikasi Admin Keuangan 🔒</span>
+            </button>
+          </div>
           <button type="button" class="btn btn-outline" id="confirmPrintBtn">Cetak Kuitansi / Bukti Bayar (PDF)</button>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="app.js?v=2.2"></script>
+  <script src="app.js?v=3.1"></script>
 </body>
 </html>
