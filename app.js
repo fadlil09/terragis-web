@@ -214,7 +214,8 @@
 
   selectAllBundleBtn.addEventListener('click', () => {
     state.selectedIds = new Set(MODULES.map((m) => m.id));
-    renderPricing();
+    syncOrderState();
+  renderPricing();
   });
 
   currencyBtns.forEach((btn) => {
@@ -383,21 +384,6 @@
   closeModalBtn.addEventListener('click', closeModal);
   cancelModalBtn.addEventListener('click', closeModal);
 
-  const navAdminBtn = document.getElementById('navAdminBtn');
-  if (navAdminBtn) {
-    navAdminBtn.addEventListener('click', () => {
-      openModal();
-      if (!checkoutStepInvoice.classList.contains('hidden')) {
-        if (tabAdminBtn) tabAdminBtn.click();
-      } else {
-        checkoutForm.dispatchEvent(new Event('submit'));
-        setTimeout(() => {
-          if (tabAdminBtn) tabAdminBtn.click();
-        }, 50);
-      }
-    });
-  }
-
   checkoutModal.addEventListener('click', (e) => {
     if (e.target === checkoutModal) closeModal();
   });
@@ -435,7 +421,6 @@
   const balanceTitle = document.getElementById('balanceTitle');
   const bStatusBadge = document.getElementById('bStatusBadge');
   const tabReceiptBtn = document.getElementById('tabReceiptBtn');
-  const tabAdminBtn = document.getElementById('tabAdminBtn');
   const rKuitansiNo = document.getElementById('rKuitansiNo');
   const rStampDate = document.getElementById('rStampDate');
   const rPayerName = document.getElementById('rPayerName');
@@ -459,40 +444,73 @@
   const proofRefInput = document.getElementById('proofRefInput');
   const proofSubmittedNotice = document.getElementById('proofSubmittedNotice');
 
-  // Admin Approval Elements
-  const adminLoginForm = document.getElementById('adminLoginForm');
-  const adminApprovalPanel = document.getElementById('adminApprovalPanel');
-  const adminPinInput = document.getElementById('adminPinInput');
-  const adminAuthError = document.getElementById('adminAuthError');
-  const adminLoginBtn = document.getElementById('adminLoginBtn');
-  const adminQuickDemoBtn = document.getElementById('adminQuickDemoBtn');
-  const adminLogoutBtn = document.getElementById('adminLogoutBtn');
-  const adminReviewAccId = document.getElementById('adminReviewAccId');
-  const adminReviewName = document.getElementById('adminReviewName');
-  const adminReviewOrg = document.getElementById('adminReviewOrg');
-  const adminReviewAmount = document.getElementById('adminReviewAmount');
-  const adminReviewStatus = document.getElementById('adminReviewStatus');
-  const adminNoteInput = document.getElementById('adminNoteInput');
-  const adminApproveBtn = document.getElementById('adminApproveBtn');
-  const adminRejectBtn = document.getElementById('adminRejectBtn');
-  const adminAuditLog = document.getElementById('adminAuditLog');
-
-  // Footer Gate Elements
-  const triggerAdminModalBtn = document.getElementById('triggerAdminModalBtn');
-  const footerAdminDot = document.getElementById('footerAdminDot');
-  const footerAdminStatusText = document.getElementById('footerAdminStatusText');
+  // Customer Modal Status Pill
+  const footerStatusDot = document.getElementById('footerStatusDot');
+  const footerStatusText = document.getElementById('footerStatusText');
 
   const billingTabs = document.querySelectorAll('.b-tab');
 
-  const invoiceState = {
-    isApproved: false,
-    licenseKey: '',
-    accountId: '',
-    name: '',
-    org: '',
-    totalIdr: '',
-    totalUsd: ''
-  };
+  function getSavedOrder() {
+    try {
+      const saved = localStorage.getItem('terragis_order');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function saveOrder(order) {
+    try {
+      localStorage.setItem('terragis_order', JSON.stringify(order));
+    } catch {
+      // ignore
+    }
+  }
+
+  function applyApprovedUI(order) {
+    if (!order) return;
+    if (paidSuccessBanner) paidSuccessBanner.classList.remove('hidden');
+    if (bStatusBadge) {
+      bStatusBadge.textContent = 'LUNAS / TERVERIFIKASI RESMI';
+      bStatusBadge.className = 'badge-status-paid';
+    }
+    if (balanceTitle) balanceTitle.textContent = 'Status Tagihan:';
+    if (rWatermark) rWatermark.classList.add('hidden');
+    if (rCircleStamp) rCircleStamp.className = 'official-circle-stamp';
+    if (rStampPaidText) rStampPaidText.textContent = 'LUNAS';
+    if (rPaidStatusBadge) {
+      rPaidStatusBadge.textContent = 'Status: LUNAS / Diverifikasi Tim Finance';
+      rPaidStatusBadge.className = 'badge-status-paid';
+    }
+    if (rLicenseKey) rLicenseKey.textContent = order.licenseKey || 'TGIS-2026-PRO-9812-44E1';
+    if (rLicenseNote) {
+      rLicenseNote.textContent = 'Lisensi komersial ini telah aktif sepenuhnya dan diverifikasi sah oleh Tim Keuangan TerraGIS untuk instansi pemesan.';
+    }
+    if (rVerifierFootnote) {
+      rVerifierFootnote.innerHTML = `<strong>Otorisasi Resmi Sah:</strong> Disetujui &amp; diverifikasi oleh Tim Keuangan TerraGIS (ID: ADM-FIN-01) pada ${order.verifiedAt || 'Hari ini'}. Dokumen Sah.`;
+    }
+    if (footerStatusDot) footerAdminDotClass(footerStatusDot, 'pulse-dot-green');
+    if (footerStatusText) {
+      footerStatusText.innerHTML = '<strong style="color: #16a34a;">LUNAS — Telah Diverifikasi Resmi oleh Tim Finance TerraGIS</strong>';
+    }
+  }
+
+  function footerAdminDotClass(el, cls) {
+    if (el) el.className = cls;
+  }
+
+  function syncOrderState() {
+    const order = getSavedOrder();
+    if (order && order.status === 'APPROVED') {
+      applyApprovedUI(order);
+    }
+  }
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'terragis_order') {
+      syncOrderState();
+    }
+  });
 
   function renderPaymentInstructions(method, idrFormatted, accountId) {
     if (!paymentInstructionBox) return;
@@ -702,30 +720,37 @@
 
     const randomTrx = String(Math.floor(1000 + Math.random() * 9000));
     const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const licenseKey = `TGIS-2026-PRO-${randomTrx}-${randomCode}`;
 
-    // Save invoice state
-    invoiceState.isApproved = false;
-    invoiceState.licenseKey = `TGIS-2026-PRO-${randomTrx}-${randomCode}`;
-    invoiceState.accountId = accountId;
-    invoiceState.name = name;
-    invoiceState.org = org;
-    invoiceState.totalIdr = totalIdr;
-    invoiceState.totalUsd = formatUSD(total);
+    const orderData = {
+      accountId,
+      name,
+      org,
+      email,
+      phone,
+      method: state.paymentMethod,
+      totalUsd: formatUSD(total),
+      totalIdr,
+      createdAt: formattedCreated,
+      status: 'PENDING_VERIFICATION',
+      licenseKey,
+      items: selected.map((s) => ({ name: s.name, price: s.price }))
+    };
+    saveOrder(orderData);
 
     // Reset tabs to first tab
     if (billingTabs.length > 0) {
       billingTabs[0].click();
     }
 
-    // Reset paid state on new submission
+    // Set initial pending UI
     if (paidSuccessBanner) paidSuccessBanner.classList.add('hidden');
     if (bStatusBadge) {
-      bStatusBadge.textContent = 'Menunggu Pembayaran / Verifikasi Admin';
+      bStatusBadge.textContent = 'Menunggu Pembayaran / Verifikasi Tim Finance';
       bStatusBadge.className = 'badge-status-pending';
     }
     if (balanceTitle) balanceTitle.textContent = 'Total Tagihan:';
 
-    // Update Buyer Proof Section
     if (proofAmountDisplay) proofAmountDisplay.textContent = totalIdr;
     if (proofSubmittedNotice) proofSubmittedNotice.classList.add('hidden');
     if (buyerSubmitProofBtn) {
@@ -735,11 +760,10 @@
           <line x1="22" y1="2" x2="11" y2="13"></line>
           <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
         </svg>
-        <span>Saya Sudah Transfer — Ajukan Verifikasi ke Admin Keuangan</span>
+        <span>Konfirmasi Pembayaran Telah Dilakukan</span>
       `;
     }
 
-    // Prepare Tab 3 (Official Paid Receipt Data in Pending State)
     if (rKuitansiNo) rKuitansiNo.textContent = `KWT-TGIS-${now.getFullYear()}-${randomTrx}`;
     if (rStampDate) rStampDate.textContent = formattedCreated.split(',')[0];
     if (rPayerName) rPayerName.textContent = name;
@@ -752,39 +776,21 @@
     if (rCircleStamp) rCircleStamp.className = 'official-circle-stamp pending-stamp';
     if (rStampPaidText) rStampPaidText.textContent = 'MENUNGGU VERIFIKASI';
     if (rPaidStatusBadge) {
-      rPaidStatusBadge.textContent = 'Status: Menunggu Otorisasi Admin Keuangan';
+      rPaidStatusBadge.textContent = 'Status: Menunggu Verifikasi Tim Finance';
       rPaidStatusBadge.className = 'badge-status-pending';
     }
-    if (rLicenseKey) rLicenseKey.textContent = 'TERKUNCI — Menunggu Otorisasi Admin Keuangan';
-    if (rLicenseNote) rLicenseNote.textContent = 'Kredensial lisensi resmi ini akan diterbitkan secara otomatis setelah pembayaran disetujui oleh Admin Finansial TerraGIS.';
-    if (rVerifierFootnote) rVerifierFootnote.textContent = 'Otorisasi Dokumen: Menunggu konfirmasi petugas Admin Finansial TerraGIS (ID: ADM-FIN-01).';
-
-    // Prepare Tab 4 (Admin Review Fields)
-    if (adminReviewAccId) adminReviewAccId.textContent = accountId;
-    if (adminReviewName) adminReviewName.textContent = name;
-    if (adminReviewOrg) adminReviewOrg.textContent = org;
-    if (adminReviewAmount) adminReviewAmount.textContent = totalIdr;
-    if (adminReviewStatus) {
-      adminReviewStatus.textContent = 'Menunggu Otorisasi Admin';
-      adminReviewStatus.className = 'badge-status-pending';
+    if (rLicenseKey) rLicenseKey.textContent = 'TERKUNCI — Diterbitkan Setelah Verifikasi';
+    if (rLicenseNote) {
+      rLicenseNote.textContent = 'Kredensial lisensi komersial resmi ini akan diaktifkan secara otomatis setelah pembayaran diverifikasi oleh Tim Keuangan TerraGIS.';
     }
-    if (adminApproveBtn) {
-      adminApproveBtn.disabled = false;
-      adminApproveBtn.innerHTML = `
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-          <polyline points="22 4 12 14.01 9 11.01"></polyline>
-        </svg>
-        <span>Setujui Pembayaran &amp; Sahkan Lisensi (Admin)</span>
-      `;
-    }
-    if (adminAuditLog) {
-      adminAuditLog.innerHTML = `<small class="mono">AUDIT TRAIL LOG: Tagihan diterbitkan. Sistem siap menerima otorisasi resmi dari petugas admin.</small>`;
+    if (rVerifierFootnote) {
+      rVerifierFootnote.textContent = 'Otorisasi Dokumen: Menunggu proses verifikasi penerimaan dana oleh Tim Keuangan TerraGIS.';
     }
 
-    // Modal Footer Gate
-    if (footerAdminDot) footerAdminDot.className = 'pulse-dot-amber';
-    if (footerAdminStatusText) footerAdminStatusText.textContent = 'Status: Menunggu Otorisasi Admin Keuangan';
+    if (footerStatusDot) footerAdminDotClass(footerStatusDot, 'pulse-dot-amber');
+    if (footerStatusText) {
+      footerStatusText.textContent = 'Status: Menunggu Verifikasi Pembayaran oleh Tim Finance TerraGIS';
+    }
 
     checkoutStepForm.classList.add('hidden');
     checkoutStepInvoice.classList.remove('hidden');
@@ -802,153 +808,20 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
-        <span>Bukti Transfer Telah Diajukan ke Admin</span>
+        <span>Konfirmasi Diterima — Dalam Antrean Verifikasi Tim Finance</span>
       `;
       if (bStatusBadge) {
-        bStatusBadge.textContent = 'Sedang Diverifikasi Admin Keuangan';
+        bStatusBadge.textContent = 'Sedang Diverifikasi Tim Finance TerraGIS';
         bStatusBadge.className = 'badge-status-pending';
       }
-      if (footerAdminStatusText) footerAdminStatusText.textContent = 'Pengajuan Masuk — Menunggu Otorisasi Admin';
-      if (adminReviewStatus) {
-        adminReviewStatus.textContent = 'Bukti Pembayaran Masuk — Siap Otorisasi';
-        adminReviewStatus.className = 'badge-status-pending';
+      if (footerStatusText) {
+        footerStatusText.textContent = 'Status: Konfirmasi Pembayaran Sedang Diverifikasi oleh Tim Finance (1x24 Jam)';
       }
-      if (adminAuditLog) {
-        const sender = proofSenderInput?.value?.trim() || invoiceState.name || 'Pembeli';
-        const ref = proofRefInput?.value?.trim() ? ` (Ref: ${proofRefInput.value.trim()})` : '';
-        adminAuditLog.innerHTML = `<small class="mono">AUDIT TRAIL LOG: ${sender} mengajukan konfirmasi transfer${ref} pada ${new Date().toLocaleTimeString('id-ID')} WIB. Menunggu otorisasi Admin.</small>`;
-      }
-    });
-  }
-
-  // Trigger Admin Modal Button in Footer
-  if (triggerAdminModalBtn) {
-    triggerAdminModalBtn.addEventListener('click', () => {
-      if (tabAdminBtn) tabAdminBtn.click();
-    });
-  }
-
-  // Admin Login Handler
-  function handleAdminLogin(pin) {
-    const validPins = ['1234', 'admin2026', 'admin'];
-    if (validPins.includes(pin)) {
-      if (adminLoginForm) adminLoginForm.classList.add('hidden');
-      if (adminApprovalPanel) adminApprovalPanel.classList.remove('hidden');
-      if (adminAuthError) adminAuthError.textContent = '';
-      if (adminPinInput) adminPinInput.value = '';
-    } else {
-      if (adminAuthError) adminAuthError.textContent = 'PIN Admin salah. Gunakan 1234 atau admin2026.';
-    }
-  }
-
-  if (adminLoginBtn) {
-    adminLoginBtn.addEventListener('click', () => {
-      const pin = (adminPinInput?.value || '').trim();
-      handleAdminLogin(pin);
-    });
-  }
-
-  if (adminQuickDemoBtn) {
-    adminQuickDemoBtn.addEventListener('click', () => {
-      handleAdminLogin('1234');
-    });
-  }
-
-  if (adminLogoutBtn) {
-    adminLogoutBtn.addEventListener('click', () => {
-      if (adminApprovalPanel) adminApprovalPanel.classList.add('hidden');
-      if (adminLoginForm) adminLoginForm.classList.remove('hidden');
-    });
-  }
-
-  // Admin Approve Handler
-  if (adminApproveBtn) {
-    adminApproveBtn.addEventListener('click', () => {
-      invoiceState.isApproved = true;
-
-      // 1. Show Paid Banner
-      if (paidSuccessBanner) paidSuccessBanner.classList.remove('hidden');
-
-      // 2. Update Cloud Billing Header Status
-      if (bStatusBadge) {
-        bStatusBadge.textContent = 'LUNAS / TERVERIFIKASI ADMIN KEUANGAN';
-        bStatusBadge.className = 'badge-status-paid';
-      }
-      if (balanceTitle) balanceTitle.textContent = 'Status Tagihan:';
-
-      // 3. Update Official Receipt (Tab 3)
-      if (rWatermark) rWatermark.classList.add('hidden');
-      if (rCircleStamp) rCircleStamp.className = 'official-circle-stamp';
-      if (rStampPaidText) rStampPaidText.textContent = 'LUNAS';
-      if (rPaidStatusBadge) {
-        rPaidStatusBadge.textContent = 'Status: LUNAS / Disahkan Petugas Admin Finansial';
-        rPaidStatusBadge.className = 'badge-status-paid';
-      }
-      if (rLicenseKey) rLicenseKey.textContent = invoiceState.licenseKey;
-      if (rLicenseNote) {
-        rLicenseNote.textContent = 'Lisensi komersial ini telah aktif sepenuhnya dan diverifikasi sah oleh Admin Finansial TerraGIS untuk instansi pemesan.';
-      }
-      if (rVerifierFootnote) {
-        const note = adminNoteInput?.value?.trim() || 'Lunas via QRIS/VA';
-        const now = new Date();
-        rVerifierFootnote.innerHTML = `<strong>Otorisasi Resmi Sah:</strong> Disetujui &amp; diverifikasi oleh Admin Finansial TerraGIS (ID: ADM-FIN-01) pada ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')} WIB. Catatan: ${note}`;
-      }
-
-      // 4. Update Admin Panel (Tab 4)
-      if (adminReviewStatus) {
-        adminReviewStatus.textContent = 'LUNAS / DISETUJUI ADMIN';
-        adminReviewStatus.className = 'badge-status-paid';
-      }
-      adminApproveBtn.disabled = true;
-      adminApproveBtn.innerHTML = `
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <polyline points="20 6 9 17 4 12"></polyline>
-        </svg>
-        <span>Pembayaran Telah Disetujui (LUNAS)</span>
-      `;
-      if (adminAuditLog) {
-        adminAuditLog.innerHTML = `<small class="mono" style="color: #16a34a; font-weight: 600;">AUDIT TRAIL LOG: Pembayaran senilai ${invoiceState.totalIdr} resmi disetujui oleh Petugas ADM-FIN-01 pada ${new Date().toLocaleTimeString('id-ID')} WIB. Lisensi ${invoiceState.licenseKey} aktif.</small>`;
-      }
-
-      // 5. Update Footer Gate
-      if (footerAdminDot) footerAdminDot.className = 'pulse-dot-green';
-      if (footerAdminStatusText) {
-        footerAdminStatusText.innerHTML = '<strong style="color: #16a34a;">LUNAS — Telah Disetujui Admin Keuangan</strong>';
-      }
-
-      // 6. Switch to Official Receipt tab
-      if (tabReceiptBtn) tabReceiptBtn.click();
-    });
-  }
-
-  // Admin Reject Handler
-  if (adminRejectBtn) {
-    adminRejectBtn.addEventListener('click', () => {
-      if (bStatusBadge) {
-        bStatusBadge.textContent = 'Ditolak / Minta Revisi Bukti';
-        bStatusBadge.className = 'badge-status-pending';
-      }
-      if (adminReviewStatus) {
-        adminReviewStatus.textContent = 'Ditolak / Menunggu Bukti Baru';
-        adminReviewStatus.className = 'badge-status-pending';
-      }
-      if (buyerSubmitProofBtn) {
-        buyerSubmitProofBtn.disabled = false;
-        buyerSubmitProofBtn.innerHTML = `<span>Kirim Ulang Bukti Transfer</span>`;
-      }
-      if (proofSubmittedNotice) {
-        proofSubmittedNotice.classList.remove('hidden');
-        proofSubmittedNotice.innerHTML = `
-          <span class="pulse-dot-amber"></span>
-          <div>
-            <strong style="color: #dc2626;">Pengajuan Ditolak oleh Admin:</strong>
-            <p>Admin meminta perbaikan atau unggah ulang bukti transfer yang valid senilai ${invoiceState.totalIdr}.</p>
-          </div>
-        `;
-      }
-      if (adminAuditLog) {
-        adminAuditLog.innerHTML = `<small class="mono" style="color: #dc2626;">AUDIT TRAIL LOG: Pembayaran ditolak oleh Petugas ADM-FIN-01 pada ${new Date().toLocaleTimeString('id-ID')} WIB. Menunggu revisi bukti transfer.</small>`;
-      }
+      const currentOrder = getSavedOrder() || {};
+      currentOrder.proofSender = proofSenderInput?.value?.trim() || '';
+      currentOrder.proofRef = proofRefInput?.value?.trim() || '';
+      currentOrder.proofSubmittedAt = new Date().toLocaleString('id-ID');
+      saveOrder(currentOrder);
     });
   }
 
@@ -1042,6 +915,7 @@
     applyZoom();
   });
 
+  syncOrderState();
   renderPricing();
   fetchCurrentUser().then(() => {
     const urlParams = new URLSearchParams(window.location.search);
