@@ -343,10 +343,21 @@
 
     const user = state.currentUser;
     const nameInput = document.getElementById('buyerName');
+    const orgInput = document.getElementById('buyerOrg');
     const emailInput = document.getElementById('buyerEmail');
-    if (user) {
-      if (!nameInput.value.trim()) nameInput.value = user.name;
-      if (!emailInput.value.trim() && user.email) emailInput.value = user.email;
+    const phoneInput = document.getElementById('buyerPhone');
+
+    if (nameInput && !nameInput.value.trim()) {
+      nameInput.value = user?.name || 'M Bahrudin';
+    }
+    if (emailInput && !emailInput.value.trim()) {
+      emailInput.value = user?.email || 'muhammadbahrudin1409@gmail.com';
+    }
+    if (orgInput && !orgInput.value.trim()) {
+      orgInput.value = 'DISKOMINFO';
+    }
+    if (phoneInput && !phoneInput.value.trim()) {
+      phoneInput.value = '0821-1388-2147';
     }
 
     modalTotalAmount.textContent = `${formatUSD(total)} USD`;
@@ -551,20 +562,15 @@
 
   checkoutForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const name = document.getElementById('buyerName').value.trim();
-    const org = document.getElementById('buyerOrg').value.trim() || 'DISKOMINFO';
-    const email = document.getElementById('buyerEmail').value.trim();
-    const phone = document.getElementById('buyerPhone').value.trim();
+    const nameInput = document.getElementById('buyerName');
+    const orgInput = document.getElementById('buyerOrg');
+    const emailInput = document.getElementById('buyerEmail');
+    const phoneInput = document.getElementById('buyerPhone');
 
-    if (!name || !email || !phone) {
-      formError.textContent = 'Mohon lengkapi Nama Lengkap, Email Resmi, dan Nomor Telepon / WhatsApp.';
-      return;
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      formError.textContent = 'Format alamat email tidak valid.';
-      return;
-    }
+    const name = (nameInput?.value || '').trim() || state.currentUser?.name || 'M Bahrudin';
+    const org = (orgInput?.value || '').trim() || 'DISKOMINFO';
+    const email = (emailInput?.value || '').trim() || state.currentUser?.email || 'muhammadbahrudin1409@gmail.com';
+    const phone = (phoneInput?.value || '').trim() || '0821-1388-2147';
 
     formError.textContent = '';
 
@@ -651,6 +657,7 @@
 
     // Prepare Tab 3 (Official Paid Receipt Data)
     const randomTrx = String(Math.floor(1000 + Math.random() * 9000));
+    const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
     if (rKuitansiNo) rKuitansiNo.textContent = `KWT-TGIS-${now.getFullYear()}-${randomTrx}`;
     if (rStampDate) rStampDate.textContent = formattedCreated.split(',')[0];
     if (rPayerName) rPayerName.textContent = name;
@@ -663,6 +670,9 @@
 
     checkoutStepForm.classList.add('hidden');
     checkoutStepInvoice.classList.remove('hidden');
+
+    const dialog = checkoutModal.querySelector('.modal-dialog');
+    if (dialog) dialog.scrollTop = 0;
   });
 
   if (confirmPaymentSuccessBtn) {
